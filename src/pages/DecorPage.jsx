@@ -1,32 +1,35 @@
 import { Link } from 'react-router-dom'
+import { useLang } from '../i18n/LanguageContext'
 import './DecorPage.css'
 
-const row1 = [
-  { title: 'ГОС', img: '/img/pagedecor/gos.png', path: '/decor/gos' },
-  { title: '3Д ПАНЕЛИ', imgs: ['/img/pagedecor/3dpanel1.png', '/img/pagedecor/3dpanel2.png'], path: '/decor/3dpanels' },
-  { title: 'ОСВЕЩЕНИЕ', img: '/img/pagedecor/light.png', path: '/decor/lighting' },
-]
-
-const row2 = [
-  { title: 'ПЕРЕГОРОДКИ', img: '/img/pagedecor/peregorodki.png', path: '/decor/peregorodki' },
-  { title: 'ШТОРЫ',       img: '/img/pagedecor/shtory.png',      path: '/decor/shtory' },
-  { title: 'РАСТЕНИЯ',    img: '/img/pagedecor/plant.png',       path: '/decor/rasteniya' },
-  { title: 'ДОСКИ',       img: '/img/pagedecor/doska.png',       path: '/decor/doski' },
-]
-
 export default function DecorPage() {
+  const { t } = useLang()
+
+  const row1 = [
+    { title: t.decor_gos,    img: '/img/pagedecor/gos.png', path: '/decor/gos' },
+    { title: t.decor_panels, imgs: ['/img/pagedecor/3dpanel1.png', '/img/pagedecor/3dpanel2.png'], path: '/decor/3dpanels' },
+    { title: t.decor_lighting, img: '/img/pagedecor/light.png', path: '/decor/lighting' },
+  ]
+
+  const row2 = [
+    { title: t.decor_peregorodki, img: '/img/pagedecor/peregorodki.png', path: '/decor/peregorodki' },
+    { title: t.decor_shtory,      img: '/img/pagedecor/shtory.png',      path: '/decor/shtory' },
+    { title: t.decor_rasteniya,   img: '/img/pagedecor/plant.png',       path: '/decor/rasteniya' },
+    { title: t.decor_doski,       img: '/img/pagedecor/doska.png',       path: '/decor/doski' },
+  ]
+
   return (
     <div className="decor-page">
 
       <div className="decor-breadcrumb">
-        <Link to="/" className="breadcrumb-link">Главная</Link>
+        <Link to="/" className="breadcrumb-link">{t.home}</Link>
         <span> / </span>
-        <span>Декор</span>
+        <span>{t.decor}</span>
       </div>
 
       <div className="decor-header">
-        <h1 className="decor-header__title">Декор</h1>
-        <span className="decor-header__count">Найдено {row1.length + row2.length} категорий</span>
+        <h1 className="decor-header__title">{t.decor}</h1>
+        <span className="decor-header__count">{t.found} {row1.length + row2.length} {t.found_categories}</span>
       </div>
 
       <main className="decor-main">

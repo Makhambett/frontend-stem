@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useLang } from '../i18n/LanguageContext'
 
 function ProductCard({ product }) {
   const [activeColor, setActiveColor] = useState(0)
+  const { t } = useLang()
 
   const img = Array.isArray(product.imgs) ? product.imgs[0] : product.img
   const size = Array.isArray(product.size) ? product.size.join(', ') : product.size
@@ -19,7 +21,6 @@ function ProductCard({ product }) {
       </div>
 
       <div className="divan-card__info">
-
         <h2 className="divan-card__title">{product.title}</h2>
         <p className="divan-card__desc">{product.description}</p>
 
@@ -45,7 +46,7 @@ function ProductCard({ product }) {
           <table className="divan-card__table">
             <tbody>
               <tr>
-                <td>Материал</td>
+                <td>{t.material}</td>
                 <td>{material}</td>
               </tr>
               <tr>
@@ -61,33 +62,33 @@ function ProductCard({ product }) {
         </div>
 
         <div className="divan-card__delivery">
-          <span>🚚 Доставка по Казахстану</span>
-          <span>📍 Самовывоз: г. Астана, ул. Домалак-ана 26</span>
+          <span>🚚 {t.delivery}</span>
+          <span>📍 {t.pickup}</span>
         </div>
 
         <div className="divan-card__actions">
           <a href={telegramLink} target="_blank" rel="noreferrer" className="btn-order">
-            Оставить заявку
+            {t.order_btn}
           </a>
-          <button className="btn-favorite">❤ В избранное</button>
+          <button className="btn-favorite">❤ {t.favorite_btn}</button>
         </div>
 
         <div className="divan-card__share">
-          <button>↗ Поделиться</button>
-          <button>⚖ Сравнить</button>
+          <button>↗ {t.share}</button>
+          <button>⚖ {t.compare_btn}</button>
         </div>
-
       </div>
     </div>
   )
 }
 
 export default function ProductList({ products, title, backPath, backLabel }) {
+  const { t } = useLang()
+
   return (
     <div className="divany-page">
-
       <div className="divany-breadcrumb">
-        <Link to="/" className="breadcrumb-link">Главная</Link>
+        <Link to="/" className="breadcrumb-link">{t.home}</Link>
         <span> / </span>
         <Link to={backPath} className="breadcrumb-link">{backLabel}</Link>
         <span> / </span>
@@ -103,7 +104,6 @@ export default function ProductList({ products, title, backPath, backLabel }) {
           <ProductCard key={p.id} product={p} />
         ))}
       </div>
-
     </div>
   )
 }

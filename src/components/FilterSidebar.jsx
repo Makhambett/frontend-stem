@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useLang } from '../i18n/LanguageContext'
 import './FilterSidebar.css'
 
 const MATERIALS = ['Дерево', 'Металл', 'Пластик', 'Стекло', 'Ткань']
@@ -8,6 +9,7 @@ export default function FilterSidebar({ onFilter }) {
   const [priceTo, setPriceTo] = useState('')
   const [inStock, setInStock] = useState(false)
   const [materials, setMaterials] = useState([])
+  const { t } = useLang()
 
   function toggleMaterial(mat) {
     if (materials.includes(mat)) {
@@ -33,12 +35,12 @@ export default function FilterSidebar({ onFilter }) {
     <aside className="filter-sidebar">
 
       <div className="filter-header">
-        <span>Фильтры</span>
-        <button className="filter-reset" onClick={handleReset}>Сбросить</button>
+        <span>{t.filters}</span>
+        <button className="filter-reset" onClick={handleReset}>{t.reset}</button>
       </div>
 
       <div className="filter-block">
-        <h4 className="filter-block__title">Цена (тг)</h4>
+        <h4 className="filter-block__title">{t.price}</h4>
         <div className="filter-price-inputs">
           <input
             type="number"
@@ -62,7 +64,7 @@ export default function FilterSidebar({ onFilter }) {
       </div>
 
       <div className="filter-block">
-        <h4 className="filter-block__title">Материал</h4>
+        <h4 className="filter-block__title">{t.material}</h4>
         <div className="filter-checkboxes">
           {MATERIALS.map((mat) => (
             <label key={mat} className="filter-checkbox">
@@ -78,9 +80,9 @@ export default function FilterSidebar({ onFilter }) {
       </div>
 
       <div className="filter-block">
-        <h4 className="filter-block__title">Наличие</h4>
+        <h4 className="filter-block__title">{t.availability}</h4>
         <label className="filter-toggle">
-          <span>В наличии</span>
+          <span>{t.in_stock}</span>
           <div
             className={inStock ? 'toggle-switch active' : 'toggle-switch'}
             onClick={() => setInStock(!inStock)}
@@ -91,7 +93,7 @@ export default function FilterSidebar({ onFilter }) {
       </div>
 
       <button className="filter-apply" onClick={handleApply}>
-        Применить
+        {t.apply}
       </button>
 
     </aside>

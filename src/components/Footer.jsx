@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom'
 import TelegramButton from './TelegramButton'
+import { useLang } from '../i18n/LanguageContext'
 import './Footer.css'
 
 export default function Footer() {
+  const { t } = useLang()
   return (
     <footer className="footer">
       <div className="footer-main">
@@ -12,9 +14,7 @@ export default function Footer() {
             <span className="footer-logo-stem">STEM</span>
             <span className="footer-logo-academia">Academia</span>
           </div>
-          <p className="footer-tagline">
-            Мебель и оборудование для образовательных пространств Казахстана
-          </p>
+          <p className="footer-tagline">{t.footer_tagline}</p>
           <div className="footer-socials">
             <a href="#" title="Instagram">IG</a>
             <a href="#" title="YouTube">YT</a>
@@ -22,53 +22,53 @@ export default function Footer() {
             <a href="https://t.me/stem_academia_bot" target="_blank" rel="noreferrer" title="Telegram">TG</a>
           </div>
           <div className="footer-tg">
-            <p>Остались вопросы?</p>
+            <p>{t.footer_questions}</p>
             <TelegramButton />
           </div>
         </div>
 
         {/* КОЛОНКА 2 — Каталог */}
         <div className="footer-col">
-          <h4 className="footer-col__title">Каталог</h4>
+          <h4 className="footer-col__title">{t.footer_catalog}</h4>
           <ul className="footer-col__list">
-            <li><Link to="/">Дизайн интерьера</Link></li>
-            <li><Link to="/secondpage">Мебель</Link></li>
-            <li><Link to="/electro">Электротехника</Link></li>
-            <li><Link to="/decor">Декор</Link></li>
-            <li><Link to="/equipment">Оборудование</Link></li>
-            <li><Link to="/digital">Цифровые продукты</Link></li>
+            <li><Link to="/">{t.nav_design}</Link></li>
+            <li><Link to="/secondpage">{t.nav_furniture}</Link></li>
+            <li><Link to="/electro">{t.nav_electro}</Link></li>
+            <li><Link to="/decor">{t.nav_decor}</Link></li>
+            <li><Link to="/equipment">{t.nav_equipment}</Link></li>
+            <li><Link to="/digital">{t.nav_digital}</Link></li>
           </ul>
         </div>
 
         {/* КОЛОНКА 3 — Компания */}
         <div className="footer-col">
-          <h4 className="footer-col__title">Компания</h4>
+          <h4 className="footer-col__title">{t.footer_company}</h4>
           <ul className="footer-col__list">
-            <li><Link to="/contacts">О нас</Link></li>
-            <li><Link to="/contacts">Наши проекты</Link></li>
-            <li><Link to="/contacts">Партнёрам</Link></li>
-            <li><Link to="/contacts">Вакансии</Link></li>
+            <li><Link to="/contacts">{t.footer_about}</Link></li>
+            <li><Link to="/contacts">{t.footer_projects}</Link></li>
+            <li><Link to="/contacts">{t.footer_partners}</Link></li>
+            <li><Link to="/contacts">{t.footer_vacancies}</Link></li>
           </ul>
         </div>
 
         {/* КОЛОНКА 4 — Контакты */}
         <div className="footer-col">
-          <h4 className="footer-col__title">Контакты</h4>
+          <h4 className="footer-col__title">{t.nav_contacts}</h4>
           <ul className="footer-col__list footer-col__list--contacts">
             <li>📍 г. Астана, ул. Домалак-ана 26</li>
             <li>📞 <a href="tel:+77000000000">+7 (700) 000-00-00</a></li>
             <li>✉ <a href="mailto:info@stemacademia.kz">info@stemacademia.kz</a></li>
-            <li>🕐 Пн–Пт: 9:00 – 18:00</li>
+            <li>🕐 {t.footer_schedule}</li>
           </ul>
         </div>
       </div>
 
       {/* НИЖНЯЯ ПОЛОСА */}
       <div className="footer-bottom">
-        <span>© 2026 STEM Academia. Все права защищены.</span>
+        <span>{t.footer_rights}</span>
         <div className="footer-bottom__links">
-          <a href="#">Политика конфиденциальности</a>
-          <a href="#">Условия использования</a>
+          <a href="#">{t.footer_privacy}</a>
+          <a href="#">{t.footer_terms}</a>
         </div>
       </div>
     </footer>

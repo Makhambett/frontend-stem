@@ -1,54 +1,49 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import FilterSidebar from '../components/FilterSidebar'
+import { useLang } from '../i18n/LanguageContext'
 import './SecondPage.css'
 
-const categories = [
-  { title: 'ДИВАНЫ',   img: '/img/pagesecond/a1a32584672.png',   path: '/secondpage/divany' },
-  { title: 'КРЕСЛО',   img: '/img/pagesecond/738d1eff.png',      path: '/secondpage/kreslo' },
-  { title: 'КУХНЯ',    img: '/img/pagesecond/4a950c62bed144.jpg', path: '#' },
-  { title: 'ПУФЫ',     img: '/img/pagesecond/a41bcac159.png',    path: '/secondpage/pufy' },
-  { title: 'СТЕЛЛАЖИ', img: '/img/pagesecond/e0f5951d3c3.png',   path: '/secondpage/stellazhi' },
-  { title: 'СТОЛЫ',    img: '/img/pagesecond/bb20aa.png',        path: '#' },
-  { title: 'СТУЛЬЯ',   img: '/img/pagesecond/983793aa0.png',     path: '/secondpage/stulya' },
-  { title: 'ТУМБЫ',    img: '/img/pagesecond/4d735992.png',      path: '/secondpage/tumby' },
-  { title: 'ШКАФЫ',    img: '/img/pagesecond/ce38f5332a.png',    path: '/secondpage/shkafy' },
-]
-
 export default function SecondPage() {
+  const { t } = useLang()
+
+  const categories = [
+    { title: t.furniture_divany,   img: '/img/pagesecond/a1a32584672.png',   path: '/secondpage/divany' },
+    { title: t.furniture_kreslo,   img: '/img/pagesecond/738d1eff.png',      path: '/secondpage/kreslo' },
+    { title: t.furniture_kuhnya,   img: '/img/pagesecond/4a950c62bed144.jpg', path: '#' },
+    { title: t.furniture_pufy,     img: '/img/pagesecond/a41bcac159.png',    path: '/secondpage/pufy' },
+    { title: t.furniture_stellazhi,img: '/img/pagesecond/e0f5951d3c3.png',   path: '/secondpage/stellazhi' },
+    { title: t.furniture_stoly,    img: '/img/pagesecond/bb20aa.png',        path: '#' },
+    { title: t.furniture_stulya,   img: '/img/pagesecond/983793aa0.png',     path: '/secondpage/stulya' },
+    { title: t.furniture_tumby,    img: '/img/pagesecond/4d735992.png',      path: '/secondpage/tumby' },
+    { title: t.furniture_shkafy,   img: '/img/pagesecond/ce38f5332a.png',    path: '/secondpage/shkafy' },
+  ]
+
   const [filtered, setFiltered] = useState(categories)
 
   function handleFilter(filters) {
-    // фильтрация по наличию (пока все показываем, логику расширишь позже)
     setFiltered(categories)
   }
 
   return (
     <div className="second-page">
 
-      {/* BREADCRUMB */}
       <div className="second-breadcrumb">
-        <Link to="/" className="breadcrumb-link">Главная</Link>
+        <Link to="/" className="breadcrumb-link">{t.home}</Link>
         <span> / </span>
-        <span>Мебель</span>
+        <span>{t.furniture}</span>
       </div>
 
-      {/* LAYOUT: сайдбар + контент */}
       <div className="second-layout">
 
-        {/* ЛЕВЫЙ ФИЛЬТР */}
         <FilterSidebar onFilter={handleFilter} />
 
-        {/* ПРАВАЯ ЧАСТЬ */}
         <div className="second-content">
-
-          {/* ШАПКА РАЗДЕЛА */}
           <div className="second-content__header">
-            <h1 className="second-content__title">Мебель</h1>
-            <span className="second-content__count">Найдено {filtered.length} категорий</span>
+            <h1 className="second-content__title">{t.furniture}</h1>
+            <span className="second-content__count">{t.found} {filtered.length} {t.found_categories}</span>
           </div>
 
-          {/* СЕТКА КАТЕГОРИЙ */}
           <main className="second-grid">
             {filtered.map((cat, i) => (
               <Link key={i} to={cat.path} className="second-card">
@@ -57,8 +52,8 @@ export default function SecondPage() {
               </Link>
             ))}
           </main>
-
         </div>
+
       </div>
     </div>
   )
