@@ -5,7 +5,7 @@ const computers = [
     id: 1,
     type: 'МОНОБЛОК',
     brand: 'AVTECH PRO',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris mi quam, euismod quis mi quis, dapibus porta ante. Aenean mi arcu, dapibus quis ornare eget, porta id mi. Suspendisse potenti. Sed ullamcorper risus eu mi dapibus sodales.',
+    description: 'Компактный и производительный моноблок AVTECH PRO — готовое решение для работы, учёбы или дома. Всё необходимое уже в комплекте: проводная мышь и клавиатура. Не нужно покупать ничего дополнительно — подключил и работай. Отличное качество сборки, чёткое изображение, тихая работа. Подойдёт для офиса, кабинета или детской комнаты.',
     included: 'мышь проводная Avtech Pro MS581, клавиатура проводная Avtech Pro KB819, кабель питания',
     img: '/img/pagethird/computers/item1.png',
     specs: [
@@ -24,7 +24,7 @@ const computers = [
     id: 2,
     type: 'НОУТБУК',
     brand: 'AVTECH PRO',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris mi quam, euismod quis mi quis, dapibus porta ante. Aenean mi arcu, dapibus quis ornare eget, porta id mi. Suspendisse potenti. Sed ullamcorper risus eu mi dapibus sodales.',
+    description: 'Надёжный ноутбук AVTECH PRO для повседневных задач. Удобно брать с собой на учёбу, в офис или в поездки. Лёгкий, компактный, при этом достаточно мощный для работы с документами, интернетом и мультимедиа. На корпусе есть все необходимые разъёмы: HDMI для подключения внешнего монитора, быстрые USB-порты, современный USB Type-C и разъём для гарнитуры',
     ports: 'HDMI, USB 3.2 Gen 1 Type-A, 1 x USB Type-C, Разъем для гарнитуры',
     img: '/img/pagethird/computers/item2.png',
     specs: [

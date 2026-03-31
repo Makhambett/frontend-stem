@@ -2,16 +2,8 @@ import { Link } from 'react-router-dom'
 import './DigitalPage.css'
 
 const row1 = [
-  {
-    title: 'ROQED SCIENCE',
-    img: '/img/pagedigital/roqed.png',
-    path: '/digital/roqed',
-  },
-  {
-    title: 'STEM PLATFORM',
-    img: '/img/pagedigital/stem-platform.png',
-    path: '/digital/stemplatform',
-  },
+  { title: 'ROQED SCIENCE',  img: '/img/pagedigital/roqed.png',         path: '/digital/roqed' },
+  { title: 'STEM PLATFORM',  img: '/img/pagedigital/stem-platform.png', path: '/digital/stemplatform' },
 ]
 
 const row2 = [
@@ -19,20 +11,32 @@ const row2 = [
     title: 'ИНФО СТЕНДЫ',
     img: '/img/pagedigital/infostend.png',
     path: '/digital/infostend',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris mi quam, euismod quis mi quis, dapibus porta ante. Aenean mi arcu, dapibus quis ornare eget, porta id mi. Suspendisse potenti. Sed ullamcorper risus eu mi dapibus sodales.',
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris mi quam, euismod quis mi quis, dapibus porta ante. Aenean mi arcu, dapibus quis ornare eget, porta id mi.',
   },
   {
     title: 'STEAM BOOK',
     img: '/img/pagedigital/steambook.png',
     path: '/digital/steambook',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris mi quam, euismod quis mi quis, dapibus porta ante. Aenean mi arcu, dapibus quis ornare eget, porta id mi. Suspendisse potenti. Sed ullamcorper risus eu mi dapibus sodales.',
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris mi quam, euismod quis mi quis, dapibus porta ante. Aenean mi arcu, dapibus quis ornare eget, porta id mi.',
   },
 ]
+
+const allItems = [...row1, ...row2]
 
 export default function DigitalPage() {
   return (
     <div className="digital-page">
-      <div className="digital-breadcrumb">ЦИФРОВЫЕ ПРОДУКТЫ</div>
+
+      <div className="digital-breadcrumb">
+        <Link to="/" className="breadcrumb-link">Главная</Link>
+        <span> / </span>
+        <span>Цифровые продукты</span>
+      </div>
+
+      <div className="digital-header">
+        <h1 className="digital-header__title">Цифровые продукты</h1>
+        <span className="digital-header__count">Найдено {allItems.length} категории</span>
+      </div>
 
       <main className="digital-main">
 

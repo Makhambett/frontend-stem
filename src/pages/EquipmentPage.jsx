@@ -13,7 +13,18 @@ const categories = [
 export default function EquipmentPage() {
   return (
     <div className="equip-page">
-      <div className="equip-breadcrumb">ОБОРУДОВАНИЯ</div>
+
+      <div className="equip-breadcrumb">
+        <Link to="/" className="breadcrumb-link">Главная</Link>
+        <span> / </span>
+        <span>Оборудование</span>
+      </div>
+
+      <div className="equip-header">
+        <h1 className="equip-header__title">Оборудование</h1>
+        <span className="equip-header__count">Найдено {categories.length} категорий</span>
+      </div>
+
       <main className="equip-grid">
         {categories.map((cat, i) => (
           <Link key={i} to={cat.path} className="equip-card">
@@ -28,6 +39,7 @@ export default function EquipmentPage() {
           </Link>
         ))}
       </main>
+
     </div>
   )
 }

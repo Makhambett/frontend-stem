@@ -1,9 +1,15 @@
 import './FirstPage.css'
 import TelegramButton from '../components/TelegramButton'
+import HeroSlider from '../components/HeroSlider'
+import CategoryGrid from '../components/CategoryGrid'
 
 export default function FirstPage() {
   return (
     <div className="page">
+
+      {/* HERO SLIDER */}
+      <HeroSlider />
+      <CategoryGrid />
 
       {/* BREADCRUMB */}
       <div className="breadcrumb">ДИЗАЙН ИНТЕРЬЕРА / ПАКЕТЫ ДИЗАЙНА</div>
@@ -14,18 +20,14 @@ export default function FirstPage() {
         <div className="package package--s">
           <div className="package__content">
             <h2 className="package__title">ПАКЕТ S</h2>
-            <p className="package__desc">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris mi quam,
-              euismod quis mi quis, dapibus porta ante. Aenean mi arcu, dapibus quis
-              ornare eget, porta id mi. Suspendisse potenti. Sed ullamcorper risus eu
-              mi dapibus sodales.
-            </p>
+            <p className="package__desc">Базовый ремонт и подготовка учебного кабинета.</p>
             <ul className="package__list">
-              <li>Lorem ipsum dolor sit amet</li>
-              <li>consectetur adipiscing elit.</li>
-              <li>Mauris mi quam, euismod quis mi</li>
-              <li>quis, dapibus porta ante.</li>
-              <li>Aenean mi arcu, dapibus</li>
+              <li>базовый дизайн-проект помещения;</li>
+              <li>косметический ремонт стен и потолка;</li>
+              <li>обновление напольного покрытия;</li>
+              <li>базовые электромонтажные работы (розетки, освещение);</li>
+              <li>подготовка помещения под оборудование;</li>
+              <li>сдача объекта в полностью готовом виде.</li>
             </ul>
           </div>
           <img src="/img/pagefirst/Слой1.png" alt="Стул" className="package__img" />
@@ -35,18 +37,14 @@ export default function FirstPage() {
         <div className="package package--m">
           <div className="package__content">
             <h2 className="package__title">ПАКЕТ M</h2>
-            <p className="package__desc">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris mi quam,
-              euismod quis mi quis, dapibus porta ante. Aenean mi arcu, dapibus quis
-              ornare eget, porta id mi. Suspendisse potenti. Sed ullamcorper risus eu
-              mi dapibus sodales.
-            </p>
+            <p className="package__desc">Комплексный ремонт с улучшенными решениями.</p>
             <ul className="package__list">
-              <li>Lorem ipsum dolor sit amet</li>
-              <li>consectetur adipiscing elit.</li>
-              <li>Mauris mi quam, euismod quis mi</li>
-              <li>quis, dapibus porta ante.</li>
-              <li>Aenean mi arcu, dapibus</li>
+              <li>расширенный дизайн-проект с учетом эргономики;</li>
+              <li>выравнивание и декоративная отделка стен;</li>
+              <li>износостойкое напольное покрытие;</li>
+              <li>расширенные электромонтажные работы;</li>
+              <li>подготовка под цифровое и интерактивное оборудование;</li>
+              <li>сдача объекта в полностью готовом виде.</li>
             </ul>
           </div>
           <img src="/img/pagefirst/plant.png" alt="Растение" className="package__img" />
@@ -56,22 +54,14 @@ export default function FirstPage() {
         <div className="package package--l">
           <div className="package__content">
             <h2 className="package__title">ПАКЕТ L</h2>
-            <p className="package__desc">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris mi quam,
-              euismod quis mi quis, dapibus porta ante. Aenean mi arcu, dapibus quis
-              ornare eget, porta id mi. Suspendisse potenti. Sed ullamcorper risus eu
-              mi dapibus sodales.
-            </p>
+            <p className="package__desc">Дизайнерский ремонт «под ключ»</p>
             <ul className="package__list">
-              <li>Lorem ipsum dolor sit amet</li>
-              <li>consectetur adipiscing elit.</li>
-              <li>Mauris mi quam, euismod quis mi</li>
-              <li>quis, dapibus porta ante.</li>
-              <li>Aenean mi arcu, dapibus</li>
-              <li>quis ornare eget</li>
-              <li>Suspendisse potenti.</li>
-              <li>ullamcorper risus eu mi</li>
-              <li>dapibus sodales.</li>
+              <li>индивидуальный дизайн-проект с 3D-визуализацией;</li>
+              <li>премиальные отделочные материалы;</li>
+              <li>полный электромонтаж и инженерные сети;</li>
+              <li>интеграция ИТ- и мультимедийных решений;</li>
+              <li>авторский и технический надзор;</li>
+              <li>сдача объекта в полностью готовом виде</li>
             </ul>
           </div>
           <img src="/img/pagefirst/F5.png" alt="Кресло" className="package__img" />
@@ -97,7 +87,6 @@ export default function FirstPage() {
           </p>
           <a href="#" className="dream__btn">ОТ 10 000 000 ТГ</a>
 
-          {/* Кнопка Telegram */}
           <div style={{ marginTop: '16px' }}>
             <TelegramButton />
           </div>

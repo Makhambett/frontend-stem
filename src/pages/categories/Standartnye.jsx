@@ -1,3 +1,4 @@
+import ProductList from '../../components/ProductList'
 import './Category.css'
 
 const products = Array.from({ length: 3 }, (_, i) => ({
@@ -8,50 +9,21 @@ const products = Array.from({ length: 3 }, (_, i) => ({
   material: ['ДСП', 'МДФ', 'Фурнитура металлическая', 'Зеркальные вставки'],
   size: '1800x600x2200',
   colors: [
-    { name: 'Белый',         hex: '#FFFFFF' },
-    { name: 'Венге',         hex: '#3B1F0A' },
-    { name: 'Дуб сонома',    hex: '#C8A97E' },
-    { name: 'Серый',         hex: '#888888' },
+    { name: 'Белый', hex: '#FFFFFF' },
+    { name: 'Венге', hex: '#3B1F0A' },
+    { name: 'Дуб сонома', hex: '#C8A97E' },
+    { name: 'Серый', hex: '#888888' },
   ],
   article: `L.Me-SN.UN.${180 + i}`,
 }))
 
 export default function Standartnye() {
   return (
-    <div className="page">
-      <div className="breadcrumb">МЕБЕЛЬ / ШКАФЫ / СТАНДАРТНЫЕ ШКАФЫ</div>
-      <main className="category-grid">
-        {products.map((p) => (
-          <div key={p.id} className="product-card">
-            <img src={p.img} alt={p.title} className="product-card__img" />
-            <div className="product-card__info">
-              <h2 className="product-card__title">{p.title}</h2>
-              <p className="product-card__desc">{p.description}</p>
-              <div className="product-card__section">
-                <strong>Материал:</strong>
-                <ol>{p.material.map((m, i) => <li key={i}>{m}</li>)}</ol>
-              </div>
-              <div className="product-card__section">
-                <strong>Размеры:</strong> {p.size}
-              </div>
-              <div className="product-card__section">
-                <strong>Цвет материала:</strong>
-                <div className="product-card__colors">
-                  {p.colors.map((c, i) => (
-                    <div key={i} className="color-item">
-                      <span className="color-circle" style={{ backgroundColor: c.hex }}></span>
-                      <span>{c.name}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="product-card__section">
-                <strong>Артикул:</strong> {p.article}
-              </div>
-            </div>
-          </div>
-        ))}
-      </main>
-    </div>
+    <ProductList
+      products={products}
+      title="Стандартные шкафы"
+      backPath="/secondpage/shkafy"
+      backLabel="Шкафы"
+    />
   )
 }

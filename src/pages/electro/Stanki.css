@@ -86,3 +86,48 @@
   font-size: 0.7rem;
   color: #999;
 }
+
+.stanki-page {
+  padding: 0 40px 60px;
+  background: #f5f5f5;
+  min-height: 100vh;
+}
+
+.stanki-breadcrumb {
+  padding: 14px 0;
+  font-size: 13px;
+  color: #888;
+}
+
+.stanki-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 24px;
+}
+
+.stanki-title span {
+  font-size: 14px;
+  color: #888;
+  font-weight: 400;
+  margin-left: 10px;
+}
+
+.stanki-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.stanki-tag {
+  font-size: 12px;
+  color: #2d6a4f;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0 0 6px;
+}
+
+@media (max-width: 768px) {
+  .stanki-page { padding: 0 16px 40px; }
+}

@@ -30,7 +30,7 @@
 .package {
   border-radius: 20px;
   position: relative;
-  overflow: visible;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   padding: 28px 24px 0;
@@ -45,10 +45,11 @@
   height: 100%;
 }
 
+/* ТЕКСТ — всегда сверху */
 .package__content {
   position: relative;
   z-index: 2;
-  flex: 1;
+  width: 55%;
 }
 
 .package__title {
@@ -93,40 +94,33 @@
   color: #ffffff;
 }
 
-.package--s .package__img {
+/* КАРТИНКИ — абсолютные, в правой части */
+.package__img {
   position: absolute;
   bottom: 55px;
-  right: 16px;
-  width: 54%;
-  max-height: 54%;
+  right: 0;
+  width: 44%;
+  max-height: 60%;
   object-fit: contain;
-  z-index: 3;
+  z-index: 1;
+  filter: drop-shadow(0 8px 16px rgba(0,0,0,0.2));
+}
+
+.package--s .package__img {
   transform: scaleX(-1);
-  filter: drop-shadow(0 8px 16px rgba(0,0,0,0.3));
+  right: 12px;
 }
 
 .package--m .package__img {
-  position: absolute;
-  bottom: 55px;
-  right: -10px;
-  width: 54%;
-  max-height: 72%;
-  object-fit: contain;
-  z-index: 3;
-  filter: drop-shadow(0 8px 20px rgba(0,0,0,0.15));
+  right: 0;
+  bottom: 50px;
 }
 
 .package--l .package__img {
-  position: absolute;
-  bottom: 55px;
-  right: 16px;
-  width: 54%;
-  max-height: 54%;
-  object-fit: contain;
-  z-index: 3;
-  filter: drop-shadow(0 8px 20px rgba(0,0,0,0.3));
+  right: 12px;
 }
 
+/* ЦЕНА */
 .package__price {
   position: relative;
   z-index: 2;
@@ -141,10 +135,10 @@
   margin-top: auto;
 }
 
+/* ЦВЕТА ПАКЕТОВ */
 .package--s {
   background: linear-gradient(170deg, #5BAEF0 0%, #1B6FD4 100%);
 }
-
 .package--s .package__price {
   background-color: #1565C0;
 }
@@ -152,7 +146,6 @@
 .package--m {
   background: linear-gradient(170deg, #3DBB7A 0%, #1A8A50 100%);
 }
-
 .package--m .package__price {
   background: transparent;
   border-top: 1px solid rgba(255,255,255,0.25);
@@ -161,7 +154,6 @@
 .package--l {
   background: linear-gradient(170deg, #C9A84C 0%, #9A6E1E 100%);
 }
-
 .package--l .package__price {
   background: transparent;
   border-top: 1px solid rgba(255,255,255,0.25);

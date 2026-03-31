@@ -1,3 +1,5 @@
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import './Stanki.css'
 
 const products = [
@@ -7,8 +9,7 @@ const products = [
     title: 'UNIMAT ML 160200',
     img: '/img/pagethird/stanki/item1.png',
     description: [
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris mi quam, euismod quis mi quis, dapibus porta ante. Aenean mi arcu, dapibus quis ornare eget, porta id mi.',
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris mi quam, euismod quis mi quis, dapibus porta ante. Aenean mi arcu, dapibus quis ornare eget, porta id mi.',
+      'Unimat — это многофункциональный учебно-лабораторный станок, предназначенный для изучения основ обработки материалов, инженерии и технологий. Станок позволяет учащимся и студентам выполнять практические задания, развивать навыки работы с металлом и пластиком, а также создавать учебные проекты в безопасной учебной среде.',
     ],
     article: 'S.Me-ST.S.DP',
   },
@@ -18,10 +19,7 @@ const products = [
     title: 'UNIMAT 1 BASIC 4B1',
     img: '/img/pagethird/stanki/item2.png',
     description: [
-      '1. Токарный станок по дереву (маленький, но мощный силовой узел позволяет успешно обрабатывать детали 135мм. длиной и до 50мм. в диаметре)',
-      '2. Электролобзик (используется для выпиливания из фанеры, твердого дерева, пробковой древесины, пластмасс и тонкого металлического листа)',
-      '3. Ручная дрель (используется как дрель, диаметр рабочего инструмента от 0,5 до 6мм.)',
-      '4. Шлифовальная машина (стационарный вращающийся шлифовальный круг применяется для финишной обработки или для заточки инструмента, а также можно использовать как ручную шлифовальную машину для обработки труднодоступных мест).',
+      'Unimat по дереву — это многофункциональный учебно-лабораторный станок, предназначенный для изучения основ обработки древесины, инженерии и технологий. Станок позволяет учащимся и студентам выполнять практические задания, развивать навыки работы с древесными материалами.',
     ],
     article: 'S.Me-ST.S.DP',
   },
@@ -31,44 +29,88 @@ const products = [
     title: 'NAME_TEXT',
     img: '/img/pagethird/stanki/item3.png',
     description: [
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris mi quam, euismod quis mi quis, dapibus porta ante. Aenean mi arcu, dapibus quis ornare eget, porta id mi.',
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris mi quam, euismod quis mi quis, dapibus porta ante. Aenean mi arcu, dapibus quis ornare eget, porta id mi.',
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris mi quam, euismod quis mi quis, dapibus porta ante.',
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris mi quam, euismod quis mi quis, dapibus porta ante.',
     ],
     article: 'S.Me-ST.S.DP',
   },
 ]
 
 export default function Stanki() {
+  const telegramBase = 'https://t.me/stem_academia_bot?text='
+
   return (
-    <div className="page">
-      <div className="breadcrumb">ЭЛЕКТРОТЕХНИКА | СТАНКИ</div>
+    <div className="stanki-page">
 
-      <main className="stanki-grid">
+      <div className="stanki-breadcrumb">
+        <Link to="/" className="breadcrumb-link">Главная</Link>
+        <span> / </span>
+        <Link to="/electro" className="breadcrumb-link">Электротехника</Link>
+        <span> / </span>
+        <span>Станки</span>
+      </div>
+
+      <h1 className="stanki-title">
+        Станки <span>{products.length} товара</span>
+      </h1>
+
+      <div className="stanki-list">
         {products.map((p) => (
-          <div key={p.id} className="stanki-card">
-            <div className="stanki-card__header">
-              <p className="stanki-card__tag">{p.tag}</p>
-              <h2 className="stanki-card__title">{p.title}</h2>
+          <div key={p.id} className="divan-card">
+
+            <div className="divan-card__gallery">
+              <img src={p.img} alt={p.title} className="divan-card__main-img" />
             </div>
 
-            <div className="stanki-card__img-wrap">
-              <img src={p.img} alt={p.title} className="stanki-card__img" />
+            <div className="divan-card__info">
+              <p className="stanki-tag">{p.tag}</p>
+              <h2 className="divan-card__title">{p.title}</h2>
+
+              <div className="divan-card__section">
+                <span className="divan-card__label">Описание:</span>
+                {p.description.map((d, i) => (
+                  <p key={i} className="divan-card__desc">{d}</p>
+                ))}
+              </div>
+
+              <div className="divan-card__section">
+                <table className="divan-card__table">
+                  <tbody>
+                    <tr>
+                      <td>Артикул</td>
+                      <td>{p.article}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="divan-card__delivery">
+                <span>🚚 Доставка по Казахстану</span>
+                <span>📍 Самовывоз: г. Астана, ул. Домалак-ана 26</span>
+              </div>
+
+              <div className="divan-card__actions">
+                <a
+                  href={`${telegramBase}${encodeURIComponent(`Здравствуйте! Интересует: ${p.title}, Артикул: ${p.article}`)}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="btn-order"
+                >
+                  Оставить заявку
+                </a>
+                <button className="btn-favorite">❤ В избранное</button>
+              </div>
+
+              <div className="divan-card__share">
+                <button>↗ Поделиться</button>
+                <button>⚖ Сравнить</button>
+              </div>
             </div>
 
-            <div className="stanki-card__body">
-              <p className="stanki-card__desc-label">Описание:</p>
-              {p.description.map((d, i) => (
-                <p key={i} className="stanki-card__desc">{d}</p>
-              ))}
-            </div>
-
-            <div className="stanki-card__footer">
-              <div className="stanki-card__divider" />
-              <p className="stanki-card__article">Артикул: {p.article}</p>
-            </div>
           </div>
         ))}
-      </main>
+      </div>
+
     </div>
   )
 }

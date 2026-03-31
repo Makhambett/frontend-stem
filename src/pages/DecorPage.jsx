@@ -2,12 +2,8 @@ import { Link } from 'react-router-dom'
 import './DecorPage.css'
 
 const row1 = [
-  { title: 'ГОС',       img: '/img/pagedecor/gos.png',   path: '/decor/gos' },
-  {
-    title: '3Д ПАНЕЛИ',
-    imgs: ['/img/pagedecor/3dpanel1.png', '/img/pagedecor/3dpanel2.png'],
-    path: '/decor/3dpanels'
-  },
+  { title: 'ГОС', img: '/img/pagedecor/gos.png', path: '/decor/gos' },
+  { title: '3Д ПАНЕЛИ', imgs: ['/img/pagedecor/3dpanel1.png', '/img/pagedecor/3dpanel2.png'], path: '/decor/3dpanels' },
   { title: 'ОСВЕЩЕНИЕ', img: '/img/pagedecor/light.png', path: '/decor/lighting' },
 ]
 
@@ -21,7 +17,18 @@ const row2 = [
 export default function DecorPage() {
   return (
     <div className="decor-page">
-      <div className="decor-breadcrumb">ДЕКОР</div>
+
+      <div className="decor-breadcrumb">
+        <Link to="/" className="breadcrumb-link">Главная</Link>
+        <span> / </span>
+        <span>Декор</span>
+      </div>
+
+      <div className="decor-header">
+        <h1 className="decor-header__title">Декор</h1>
+        <span className="decor-header__count">Найдено {row1.length + row2.length} категорий</span>
+      </div>
+
       <main className="decor-main">
 
         <div className="decor-row decor-row--3">

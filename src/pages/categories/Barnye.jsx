@@ -1,3 +1,4 @@
+import ProductList from '../../components/ProductList'
 import './Category.css'
 
 const products = [
@@ -9,10 +10,10 @@ const products = [
     material: ['Синтепон', 'Мягкая поверхность', 'Велкор', 'Металлические ножки'],
     size: '400x400x750',
     colors: [
-      { name: 'Оранжевый',     hex: '#FF6600' },
-      { name: 'Бежевый',       hex: '#F5DEB3' },
+      { name: 'Оранжевый', hex: '#FF6600' },
+      { name: 'Бежевый', hex: '#F5DEB3' },
       { name: 'Тёмно-зелёный', hex: '#1B4D3E' },
-      { name: 'Серый',         hex: '#888888' },
+      { name: 'Серый', hex: '#888888' },
     ],
     article: 'L.Me-BA.UN.400',
   },
@@ -24,10 +25,10 @@ const products = [
     material: ['Синтепон', 'Мягкая поверхность', 'Велкор', 'Металлические ножки'],
     size: '400x400x750',
     colors: [
-      { name: 'Оранжевый',     hex: '#FF6600' },
-      { name: 'Бежевый',       hex: '#F5DEB3' },
+      { name: 'Оранжевый', hex: '#FF6600' },
+      { name: 'Бежевый', hex: '#F5DEB3' },
       { name: 'Тёмно-зелёный', hex: '#1B4D3E' },
-      { name: 'Серый',         hex: '#888888' },
+      { name: 'Серый', hex: '#888888' },
     ],
     article: 'L.Me-BA.UN.401',
   },
@@ -39,10 +40,10 @@ const products = [
     material: ['Синтепон', 'Мягкая поверхность', 'Велкор', 'Металлические ножки'],
     size: '400x400x750',
     colors: [
-      { name: 'Оранжевый',     hex: '#FF6600' },
-      { name: 'Бежевый',       hex: '#F5DEB3' },
+      { name: 'Оранжевый', hex: '#FF6600' },
+      { name: 'Бежевый', hex: '#F5DEB3' },
       { name: 'Тёмно-зелёный', hex: '#1B4D3E' },
-      { name: 'Серый',         hex: '#888888' },
+      { name: 'Серый', hex: '#888888' },
     ],
     article: 'L.Me-BA.UN.402',
   },
@@ -50,46 +51,11 @@ const products = [
 
 export default function Barnye() {
   return (
-    <div className="page">
-      <div className="breadcrumb">МЕБЕЛЬ / СТУЛЬЯ / БАРНЫЕ СТУЛЬЯ</div>
-      <main className="category-grid">
-        {products.map((p) => (
-          <div key={p.id} className="product-card">
-            <img src={p.img} alt={p.title} className="product-card__img" />
-            <div className="product-card__info">
-              <h2 className="product-card__title">{p.title}</h2>
-              <p className="product-card__desc">{p.description}</p>
-
-              <div className="product-card__section">
-                <strong>Материал:</strong>
-                <ol>
-                  {p.material.map((m, i) => <li key={i}>{m}</li>)}
-                </ol>
-              </div>
-
-              <div className="product-card__section">
-                <strong>Размеры:</strong> {p.size}
-              </div>
-
-              <div className="product-card__section">
-                <strong>Цвет материала:</strong>
-                <div className="product-card__colors">
-                  {p.colors.map((c, i) => (
-                    <div key={i} className="color-item">
-                      <span className="color-circle" style={{ backgroundColor: c.hex }}></span>
-                      <span>{c.name}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="product-card__section">
-                <strong>Артикул:</strong> {p.article}
-              </div>
-            </div>
-          </div>
-        ))}
-      </main>
-    </div>
+    <ProductList
+      products={products}
+      title="Барные стулья"
+      backPath="/secondpage/stulya"
+      backLabel="Стулья"
+    />
   )
 }
