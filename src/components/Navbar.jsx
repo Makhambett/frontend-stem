@@ -38,7 +38,6 @@ export default function Navbar() {
       {/* TOP BAR */}
       <div className="navbar-topbar">
         <span className="topbar-city">📍 {t.city}</span>
-        <Link to="/contacts" className="topbar-link">{t.stores}</Link>
         <div className="topbar-right">
           <span className="topbar-phone">📞 {t.phone}</span>
           <span
@@ -87,28 +86,6 @@ export default function Navbar() {
             </div>
             <span>{t.favorite}</span>
           </Link>
-
-          {/* СРАВНИТЬ */}
-          <button className="nav-icon-btn" title={t.compare}>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-            </svg>
-            <span>{t.compare}</span>
-          </button>
-
-          {/* TELEGRAM */}
-          <a
-            href="https://t.me/stem_academia_bot"
-            target="_blank"
-            rel="noreferrer"
-            className="nav-icon-btn nav-telegram"
-            title="Telegram"
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-1.97 9.289c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.17 13.857l-2.95-.924c-.64-.203-.654-.64.136-.948l11.527-4.443c.533-.194 1.003.131.679.706z"/>
-            </svg>
-            <span>Telegram</span>
-          </a>
 
           {/* КОРЗИНА */}
           <button

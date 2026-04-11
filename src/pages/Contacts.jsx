@@ -1,5 +1,4 @@
 import './Contacts.css'
-import TelegramButton from '../components/TelegramButton';
 
 export default function Contacts() {
   return (
@@ -52,20 +51,6 @@ export default function Contacts() {
             <h3 className="contacts-col__title">Адрес</h3>
             <p className="contacts-col__text">г. Астана, Домалак Ана 26</p>
             <p className="contacts-col__text">г. Алматы, проспект Аль - Фараби 77/2</p>
-          </div>
-
-          {/* Telegram */}
-          <div className="contacts-col">
-            <h3 className="contacts-col__title">Telegram</h3>
-            <p className="contacts-col__desc">Напишите нам - ответим быстро!</p>
-            <a href="https://t.me/stem_academia_bot" target="_blank" className="contacts-tg-btn">
-               Открыть чат
-            </a>
-          </div>
-
-          <div className="contacts-telegram">
-          <h3>Задать вопрос менеджеру</h3>
-          <TelegramButton />
           </div>
 
         </div>

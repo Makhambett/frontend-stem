@@ -1,66 +1,46 @@
-import { useState, useEffect } from 'react'
-import { useSearchParams, Link } from 'react-router-dom'
-import { getProducts } from '../api/api'
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useLang } from '../i18n/LanguageContext'
-import './SearchPage.css'
+import './SecondPage.css'
 
-export default function SearchPage() {
-  const [searchParams] = useSearchParams()
-  const query = searchParams.get('q') || ''
-  const [results, setResults] = useState([])
-  const [loading, setLoading] = useState(true)
+export default function SecondPage() {
   const { t } = useLang()
-
-  useEffect(() => {
-    if (query) {
-      setLoading(true)
-      getProducts({ q: query }).then(data => {
-        setResults(data)
-        setLoading(false)
-      })
-    }
-  }, [query])
+  
+  const categories = [
+    { title: t.furniture_divany, img: '/img/pagesecond/a1a32584672.png', path: '/secondpage/divany' },
+    { title: t.furniture_kreslo, img: '/img/pagesecond/738d1eff.png', path: '/secondpage/kreslo' },
+    { title: t.furniture_kuhnya, img: '/img/pagesecond/4a950c62bed144.jpg', path: '#' },
+    { title: t.furniture_pufy, img: '/img/pagesecond/a41bcac159.png', path: '/secondpage/pufy' },
+    { title: t.furniture_stellazhi, img: '/img/pagesecond/e0f5951d3c3.png', path: '/secondpage/stellazhi' },
+    { title: t.furniture_stoly, img: '/img/pagesecond/bb20aa.png', path: '#' },
+    { title: t.furniture_stulya, img: '/img/pagesecond/983793aa0.png', path: '/secondpage/stulya' },
+    { title: t.furniture_tumby, img: '/img/pagesecond/4d735992.png', path: '/secondpage/tumby' },
+    { title: t.furniture_shkafy, img: '/img/pagesecond/ce38f5332a.png', path: '/secondpage/shkafy' },
+  ]
 
   return (
-    <div className="search-page">
-      <div className="search-breadcrumb">
+    <div className="second-page">
+      <nav className="second-breadcrumb">
         <Link to="/" className="breadcrumb-link">{t.home}</Link>
         <span> / </span>
-        <span>Поиск: {query}</span>
+        <span>{t.furniture}</span>
+      </nav>
+
+      <div className="second-content">
+        <div className="second-content__header">
+          <h1 className="second-content__title">{t.furniture}</h1>
+          <span className="second-content__count">{t.found} {categories.length} {t.found_categories}</span>
+        </div>
+
+        <main className="second-grid">
+          {categories.map((cat, i) => (
+            <Link key={i} to={cat.path} className="second-card">
+              <img src={cat.img} alt={cat.title} className="second-card__img" />
+              <span className="second-card__title">{cat.title}</span>
+            </Link>
+          ))}
+        </main>
       </div>
-
-      <h1 className="search-title">
-        Результаты поиска: <span>"{query}"</span>
-      </h1>
-
-      {loading ? (
-        <p className="search-loading">Загрузка...</p>
-      ) : results.length === 0 ? (
-        <p className="search-empty">Ничего не найдено по запросу "{query}"</p>
-      ) : (
-        <>
-          <p className="search-count">Найдено {results.length} товаров</p>
-          <div className="search-grid">
-            {results.map(product => (
-              <div key={product.id} className="search-card">
-                <img src={product.img} alt={product.title} className="search-card__img" />
-                <div className="search-card__info">
-                  <h3 className="search-card__title">{product.title}</h3>
-                  <p className="search-card__article">Артикул: {product.article}</p>
-                  <a
-                    href={`https://t.me/stem_academia_bot?text=${encodeURIComponent(`Интересует: ${product.title}`)}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="btn-order"
-                  >
-                    {t.order_btn}
-                  </a>
-                </div>
-              </div>
-            ))}
-          </div>
-        </>
-      )}
     </div>
   )
 }

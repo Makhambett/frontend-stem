@@ -1,11 +1,31 @@
+import { useState, useEffect } from 'react'
 import { Routes, Route } from 'react-router-dom'
+
+// Компоненты интерфейса
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
+import FloatingButtons from './components/FloatingButtons'
+import AIWelcome from './components/AIWelcome' // ✅ AI-приветствие
+
+// Контексты
+import { useCart } from './context/CartContext'
+import { useAuth } from './context/AuthContext'
+import CartDrawer from './components/CartDrawer'
+import AuthModal from './components/AuthModal'
+
+// Страницы
 import FirstPage from './pages/FirstPage'
 import SecondPage from './pages/SecondPage'
 import ThirdPage from './pages/ThirdPage'
 import DecorPage from './pages/DecorPage'
 import EquipmentPage from './pages/EquipmentPage'
+import Contacts from './pages/Contacts'
+import SearchPage from './pages/SearchPage'
+import FavoritesPage from './pages/FavoritesPage'
+import ProfilePage from './pages/ProfilePage'
+import DigitalPage from './pages/digital/DigitalPage'
+
+// Категории мебели
 import Divany from './pages/categories/Divany'
 import Kreslo from './pages/categories/Kreslo'
 import Pufy from './pages/categories/Pufy'
@@ -18,9 +38,12 @@ import Barnye from './pages/categories/Barnye'
 import Shkafy from './pages/categories/Shkafy'
 import Vstroenye from './pages/categories/Vstroenye'
 import Standartnye from './pages/categories/Standartnye'
+
+// Оборудование
 import Ulab from './pages/equipment/Ulab'
 import Labdisc from './pages/equipment/Labdisc'
-import Contacts from './pages/Contacts'
+
+// Декор
 import Gos from './pages/decor/Gos'
 import Panels3D from './pages/decor/Panels3D'
 import Lighting from './pages/decor/Lighting'
@@ -28,40 +51,58 @@ import Peregorodki from './pages/decor/Peregorodki'
 import Shtory from './pages/decor/Shtory'
 import Rasteniya from './pages/decor/Rasteniya'
 import Doski from './pages/decor/Doski'
+
+// Электротехника
 import InteractivePanels from './pages/electro/InteractivePanels'
 import Computers from './pages/electro/Computers'
 import InfoKiosk from './pages/electro/InfoKiosk'
 import Stanki from './pages/electro/Stanki'
 import Bytovaya from './pages/electro/Bytovaya'
 import Printers3D from './pages/electro/Printers3D'
-import DigitalPage from './pages/digital/DigitalPage'
-import SearchPage from './pages/SearchPage'
-import { useCart } from './context/CartContext'
-import { useAuth } from './context/AuthContext'
-import CartDrawer from './components/CartDrawer'
-import AuthModal from './components/AuthModal'
-import FavoritesPage from './pages/FavoritesPage'
-import ProfilePage from './pages/ProfilePage'
+
 export default function App() {
   const { isOpen } = useCart()
   const { showModal } = useAuth()
+  
+  // ✅ Состояние для AI-приветствия
+  const [showAIWelcome, setShowAIWelcome] = useState(false)
+
+  // ✅ Показываем приветствие только при первом визите
+  useEffect(() => {
+    const hasSeen = localStorage.getItem('ai_welcome_seen')
+    if (!hasSeen) {
+      // Небольшая задержка, чтобы пользователь успел увидеть сайт
+      const timer = setTimeout(() => setShowAIWelcome(true), 1500)
+      return () => clearTimeout(timer)
+    }
+  }, [])
+
+  // ✅ Обработчик закрытия: запоминаем, что пользователь видел окно
+  const handleAIClose = () => {
+    setShowAIWelcome(false)
+    localStorage.setItem('ai_welcome_seen', 'true')
+  }
 
   return (
     <>
+      {/* Навбар */}
       <Navbar />
 
-      {/* Корзина — выдвижная панель */}
+      {/* Выдвижная корзина */}
       {isOpen && <CartDrawer />}
 
-      {/* Модалка входа в личный кабинет */}
+      {/* Модалка авторизации */}
       {showModal && <AuthModal />}
 
+      {/* Маршруты */}
       <Routes>
         <Route path="/" element={<FirstPage />} />
         <Route path="/secondpage" element={<SecondPage />} />
         <Route path="/electro" element={<ThirdPage />} />
         <Route path="/decor" element={<DecorPage />} />
         <Route path="/equipment" element={<EquipmentPage />} />
+        
+        {/* Мебель */}
         <Route path="/secondpage/divany" element={<Divany />} />
         <Route path="/secondpage/kreslo" element={<Kreslo />} />
         <Route path="/secondpage/pufy" element={<Pufy />} />
@@ -74,9 +115,15 @@ export default function App() {
         <Route path="/secondpage/shkafy" element={<Shkafy />} />
         <Route path="/secondpage/shkafy/vstroenye" element={<Vstroenye />} />
         <Route path="/secondpage/shkafy/standartnye" element={<Standartnye />} />
+        
+        {/* Оборудование */}
         <Route path="/equipment/ulab" element={<Ulab />} />
         <Route path="/equipment/labdisc" element={<Labdisc />} />
+        
+        {/* Контакты */}
         <Route path="/contacts" element={<Contacts />} />
+        
+        {/* Декор */}
         <Route path="/decor/gos" element={<Gos />} />
         <Route path="/decor/3dpanels" element={<Panels3D />} />
         <Route path="/decor/lighting" element={<Lighting />} />
@@ -84,19 +131,32 @@ export default function App() {
         <Route path="/decor/shtory" element={<Shtory />} />
         <Route path="/decor/rasteniya" element={<Rasteniya />} />
         <Route path="/decor/doski" element={<Doski />} />
+        
+        {/* Электротехника */}
         <Route path="/electro/interactive" element={<InteractivePanels />} />
         <Route path="/electro/computers" element={<Computers />} />
         <Route path="/electro/infokiosk" element={<InfoKiosk />} />
         <Route path="/electro/stanki" element={<Stanki />} />
         <Route path="/electro/bytovaya" element={<Bytovaya />} />
         <Route path="/electro/printers3d" element={<Printers3D />} />
+        
+        {/* Цифровые продукты */}
         <Route path="/digital" element={<DigitalPage />} />
+        
+        {/* Системные */}
         <Route path="/search" element={<SearchPage />} />
         <Route path="/favorites" element={<FavoritesPage />} />
         <Route path="/profile" element={<ProfilePage />} />
       </Routes>
 
+      {/* Футер */}
       <Footer />
+
+      {/* Плавающие кнопки связи */}
+      <FloatingButtons />
+
+      {/* ✅ AI-приветствие (показывается 1 раз) */}
+      {showAIWelcome && <AIWelcome onClose={handleAIClose} />}
     </>
   )
 }

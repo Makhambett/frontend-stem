@@ -43,10 +43,6 @@ export default function Footer() {
               TG
             </a>
           </div>
-          <div className="footer-tg">
-            <p>{t.footer_questions}</p>
-            <TelegramButton />
-          </div>
         </div>
 
         {/* КОЛОНКА 2 — Каталог */}

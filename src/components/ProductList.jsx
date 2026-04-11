@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { useLang } from '../i18n/LanguageContext'
+import { useFavorites } from '../context/FavoritesContext'
+import { useCart } from '../context/CartContext'
 import './ProductList.css'
 
 // ─── Модалка заявки ───────────────────────────────────────────
@@ -25,6 +27,12 @@ function ApplicationModal({ product, onClose }) {
     return () => document.removeEventListener('keydown', handler)
   }, [onClose])
 
+  // Блокировка скролла
+  useEffect(() => {
+    document.body.style.overflow = 'hidden'
+    return () => { document.body.style.overflow = 'unset' }
+  }, [])
+
   const validateName = (name) => {
     const cleaned = name.trim()
     return /^[A-Za-zА-Яа-яӘәҒғҚқҢңӨөҰұҮүҺһІіЁё\s-]{2,50}$/.test(cleaned)
@@ -39,11 +47,6 @@ function ApplicationModal({ product, onClose }) {
     const filtered = e.target.value.replace(/[^\d+()\-\s]/g, '')
     setForm((prev) => ({ ...prev, phone: filtered }))
     setPhoneError('')
-  }
-
-  const handleNameChange = (e) => {
-    setForm((prev) => ({ ...prev, name: e.target.value }))
-    setNameError('')
   }
 
   const handleSubmit = async (e) => {
@@ -75,7 +78,6 @@ function ApplicationModal({ product, onClose }) {
       })
 
       if (!response.ok) throw new Error('Ошибка отправки')
-
       setSent(true)
     } catch {
       alert('Не удалось отправить заявку. Попробуйте позже.')
@@ -87,67 +89,65 @@ function ApplicationModal({ product, onClose }) {
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-box" onClick={(e) => e.stopPropagation()}>
-        <button className="modal-close" onClick={onClose} type="button">
-          ×
-        </button>
-
-        <h3 className="modal-title">Оставить заявку</h3>
-        <p className="modal-product-name">{product.title}</p>
-        {product.article && (
-          <p className="modal-article">Артикул: {product.article}</p>
-        )}
-
+        <button className="modal-close" onClick={onClose} type="button">×</button>
+        
         {sent ? (
           <div className="modal-success">
-            <strong>Заявка отправлена!</strong>
+            <strong>✅ Заявка отправлена!</strong>
             <br />
             Менеджер свяжется с вами в ближайшее время.
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="modal-form">
-            <input
-              className="modal-input"
-              type="text"
-              placeholder="Ваше имя"
-              value={form.name}
-              onChange={handleNameChange}
-              required
-            />
-            {nameError && <p className="modal-error">{nameError}</p>}
+          <>
+            <h3 className="modal-title">Оставить заявку</h3>
+            <p className="modal-product-name">{product.title}</p>
+            {product.article && <p className="modal-article">Артикул: {product.article}</p>}
 
-            <input
-              className="modal-input"
-              type="tel"
-              placeholder="+7 (777) 123-45-67"
-              value={form.phone}
-              onChange={handlePhoneChange}
-              required
-            />
-            {phoneError && <p className="modal-error">{phoneError}</p>}
+            <form onSubmit={handleSubmit} className="modal-form">
+              <div>
+                <input
+                  className="modal-input"
+                  type="text"
+                  placeholder="Ваше имя"
+                  value={form.name}
+                  onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
+                  required
+                />
+                {nameError && <p className="modal-error">{nameError}</p>}
+              </div>
 
-            <input
-              className="modal-input"
-              type="text"
-              placeholder="Telegram username (необязательно)"
-              value={form.username}
-              onChange={(e) =>
-                setForm((prev) => ({ ...prev, username: e.target.value }))
-              }
-            />
+              <div>
+                <input
+                  className="modal-input"
+                  type="tel"
+                  placeholder="+7 (777) 123-45-67"
+                  value={form.phone}
+                  onChange={handlePhoneChange}
+                  required
+                />
+                {phoneError && <p className="modal-error">{phoneError}</p>}
+              </div>
 
-            <textarea
-              className="modal-input modal-textarea"
-              placeholder="Комментарий"
-              value={form.comment}
-              onChange={(e) =>
-                setForm((prev) => ({ ...prev, comment: e.target.value }))
-              }
-            />
+              <input
+                className="modal-input"
+                type="text"
+                placeholder="Telegram username (необязательно)"
+                value={form.username}
+                onChange={(e) => setForm((prev) => ({ ...prev, username: e.target.value }))}
+              />
 
-            <button type="submit" className="btn-order" disabled={loading}>
-              {loading ? 'Отправка...' : 'Отправить заявку'}
-            </button>
-          </form>
+              <textarea
+                className="modal-input modal-textarea"
+                placeholder="Комментарий"
+                value={form.comment}
+                onChange={(e) => setForm((prev) => ({ ...prev, comment: e.target.value }))}
+              />
+
+              <button type="submit" className="btn-order" disabled={loading}>
+                {loading ? 'Отправка...' : 'Отправить заявку'}
+              </button>
+            </form>
+          </>
         )}
       </div>
     </div>
@@ -156,63 +156,88 @@ function ApplicationModal({ product, onClose }) {
 
 // ─── Карточка товара ──────────────────────────────────────────
 function ProductCard({ product }) {
-  const [activeColor, setActiveColor] = useState(0)
   const [showModal, setShowModal] = useState(false)
+  const [activeColor, setActiveColor] = useState(0)
+  const [addedToCart, setAddedToCart] = useState(false)
+  
   const { t } = useLang()
+  const { toggleFavorite, isFavorite } = useFavorites()
+  const { addToCart } = useCart()
 
-  const img = Array.isArray(product.imgs)
-    ? product.imgs[0]
-    : product.img
-
-  const size = Array.isArray(product.size)
-    ? product.size.join(', ')
-    : product.size
-
-  const material = Array.isArray(product.material)
-    ? product.material.join(', ')
-    : product.material
-
+  // Обработка изображений (массив или строка)
+  const img = Array.isArray(product.imgs) ? product.imgs[0] : product.img
+  const size = Array.isArray(product.size) ? product.size.join(', ') : product.size
+  const material = Array.isArray(product.material) ? product.material.join(', ') : product.material
   const colors = product.colors || []
+  
+  // Проверка избранного
+  const inFavorite = isFavorite(product.id)
 
   const handleClose = useCallback(() => setShowModal(false), [])
+
+  // Добавление в корзину
+  const handleAddToCart = () => {
+    addToCart({
+      id: product.id,
+      name: product.title,
+      image: img,
+      price: product.price || 0,
+      article: product.article,
+    })
+    setAddedToCart(true)
+    setTimeout(() => setAddedToCart(false), 2000)
+  }
+
+  // Добавление в избранное
+  const handleFavoriteClick = () => {
+    toggleFavorite(product)
+  }
 
   return (
     <>
       <div className="divan-card">
+        {/* Галерея */}
         <div className="divan-card__gallery">
-          <img src={img} alt={product.title} className="divan-card__main-img" />
+          <img src={img} alt={product.title} className="divan-card__main-img" loading="lazy" />
+          {product.in_stock === false && (
+            <span className="badge-out">Нет в наличии</span>
+          )}
         </div>
 
+        {/* Информация */}
         <div className="divan-card__info">
           <h2 className="divan-card__title">{product.title}</h2>
           <p className="divan-card__desc">{product.description}</p>
 
+          {/* Выбор цвета */}
           {colors.length > 0 && (
             <div className="divan-card__section">
               <span className="divan-card__label">
-                Цвет: <strong>{colors[activeColor]?.name}</strong>
+                Цвет: <strong>{colors[activeColor]?.name || 'Стандарт'}</strong>
               </span>
               <div className="divan-card__colors">
                 {colors.map((c, i) => (
                   <button
                     key={i}
-                    className={i === activeColor ? 'color-dot active' : 'color-dot'}
+                    className={`color-dot ${i === activeColor ? 'active' : ''}`}
                     style={{ backgroundColor: c.hex }}
                     onClick={() => setActiveColor(i)}
                     title={c.name}
+                    type="button"
                   />
                 ))}
               </div>
             </div>
           )}
 
+          {/* Характеристики */}
           <div className="divan-card__section">
             <span className="divan-card__label">Характеристики:</span>
             <table className="divan-card__table">
               <tbody>
                 {material && (
                   <tr>
-                    <td>{t.material}</td>
+                    <td>{t.material || 'Материал'}</td>
                     <td>{material}</td>
                   </tr>
                 )}
@@ -232,53 +257,91 @@ function ProductCard({ product }) {
             </table>
           </div>
 
+          {/* Доставка */}
           <div className="divan-card__delivery">
-            <span>🚚 {t.delivery}</span>
-            <span>📍 {t.pickup}</span>
+            <span>🚚 {t.delivery || 'Доставка по Казахстану'}</span>
+            <span>📍 {t.pickup || 'Самовывоз'}</span>
           </div>
 
+          {/* Кнопки действий */}
           <div className="divan-card__actions">
-            <button className="btn-order" onClick={() => setShowModal(true)}>
-              {t.order_btn}
+            <button 
+              className="btn-add-to-cart" 
+              onClick={handleAddToCart}
+              disabled={addedToCart || product.in_stock === false}
+              type="button"
+            >
+              {addedToCart ? '✓ Добавлено!' : '🛒 В корзину'}
             </button>
-            <button className="btn-favorite">❤ {t.favorite_btn}</button>
+            
+            <button 
+              className={`btn-favorite ${inFavorite ? 'active' : ''}`}
+              onClick={handleFavoriteClick}
+              type="button"
+              aria-pressed={inFavorite}
+            >
+              ❤ {inFavorite ? 'В избранном' : 'В избранное'}
+            </button>
           </div>
 
+          {/* Кнопка заявки (на всю ширину) */}
+          <button className="btn-order-full" onClick={() => setShowModal(true)} type="button">
+            📝 Оставить заявку
+          </button>
+
+          {/* Доп. кнопки */}
           <div className="divan-card__share">
-            <button>↗ {t.share}</button>
-            <button>⚖ {t.compare_btn}</button>
+            <button type="button">↗ {t.share || 'Поделиться'}</button>
+            <button type="button">⚖ {t.compare_btn || 'Сравнить'}</button>
           </div>
         </div>
       </div>
 
-      {showModal && (
-        <ApplicationModal product={product} onClose={handleClose} />
-      )}
+      {/* Модальное окно */}
+      {showModal && <ApplicationModal product={product} onClose={handleClose} />}
     </>
   )
 }
 
-// ─── Список товаров ───────────────────────────────────────────
+// ─── Список товаров (Основной компонент) ──────────────────────
 export default function ProductList({ products, title, backPath, backLabel }) {
   const { t } = useLang()
 
+  if (!products || products.length === 0) {
+    return (
+      <div className="divany-page">
+        <div className="empty-state">
+          <h2>😕 Товары не найдены</h2>
+          <Link to={backPath} className="btn-back">← Вернуться назад</Link>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="divany-page">
+      {/* Хлебные крошки */}
       <div className="divany-breadcrumb">
-        <Link to="/" className="breadcrumb-link">{t.home}</Link>
+        <Link to="/" className="breadcrumb-link">{t.home || 'Главная'}</Link>
         <span> / </span>
-        <Link to={backPath} className="breadcrumb-link">{backLabel}</Link>
-        <span> / </span>
+        {backPath && (
+          <>
+            <Link to={backPath} className="breadcrumb-link">{backLabel || 'Каталог'}</Link>
+            <span> / </span>
+          </>
+        )}
         <span>{title}</span>
       </div>
 
+      {/* Заголовок */}
       <h1 className="divany-title">
         {title} <span>{products.length} товаров</span>
       </h1>
 
+      {/* Сетка товаров */}
       <div className="divany-list">
         {products.map((p) => (
-          <ProductCard key={p.id} product={p} />
+          <ProductCard key={p.id || p.article} product={p} />
         ))}
       </div>
     </div>

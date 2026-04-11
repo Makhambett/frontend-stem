@@ -1,81 +1,126 @@
-import { useState } from 'react'
+import { useState, memo } from 'react'
 import { Link } from 'react-router-dom'
 import { useFavorites } from '../context/FavoritesContext'
 import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
 import './FavoritesPage.css'
 
-function FavCard({ item }) {
+// ─── Карточка товара ────────────────────────────────────────
+const FavCard = memo(function FavCard({ item }) {
   const { toggleFavorite } = useFavorites()
   const { addToCart } = useCart()
   const [added, setAdded] = useState(false)
+  const [imgError, setImgError] = useState(false)
 
-  const telegramMsg = `Здравствуйте! Хочу узнать подробнее о товаре: ${item.name}`
+  const id = item.id || item.article || item.sku || Math.random()
+  const name = item.name || item.title || item.product_name || 'Без названия'
+  const price = item.price ?? item.cost ?? null
+  const article = item.article || item.sku || ''
+  
+  const imageSrc = imgError 
+    ? '/placeholder-product.svg' 
+    : (item.imgs?.[0] || item.image || item.img || '/placeholder-product.svg')
+
+  const telegramMsg = `Здравствуйте! Интересует товар: ${name}`
   const telegramLink = `https://t.me/stem_academia_bot?text=${encodeURIComponent(telegramMsg)}`
 
   const handleAddToCart = () => {
     addToCart({
-      id: item.id,
-      name: item.name,
-      image: item.image,
-      price: item.price || 0,
+      id,
+      name,
+      image: imageSrc,
+      price: price || 0,
+      article,
     })
     setAdded(true)
     setTimeout(() => setAdded(false), 2000)
   }
 
+  // ✅ ИСПРАВЛЕНО - передаем весь объект item
+  const handleRemove = () => {
+    toggleFavorite(item)
+  }
+
   return (
-    <div className="fav-card">
-      {/* УДАЛИТЬ */}
+    <article className="fav-card">
       <button
         className="fav-card__remove"
-        onClick={() => toggleFavorite(item)}
+        onClick={handleRemove}
         title="Убрать из избранного"
-      >✕</button>
+        aria-label={`Убрать ${name} из избранного`}
+        type="button"
+      >
+        ×
+      </button>
 
-      {/* ФОТО */}
-      <img src={item.image} alt={item.name} className="fav-card__img" />
-
-      {/* ИНФО */}
-      <div className="fav-card__info">
-        <h3 className="fav-card__name">{item.name}</h3>
-        {item.price > 0 && (
-          <p className="fav-card__price">{item.price.toLocaleString()} ₸</p>
+      <div className="fav-card__image-wrapper">
+        <img 
+          src={imageSrc} 
+          alt={name} 
+          className="fav-card__img" 
+          loading="lazy"
+          onError={() => setImgError(true)}
+        />
+        {imgError && (
+          <div style={{color:'#999', textAlign:'center', position:'absolute', inset:0, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center'}}>
+            <span style={{fontSize:'40px'}}>📦</span>
+            <p>Нет фото</p>
+          </div>
         )}
       </div>
 
-      {/* КНОПКИ */}
-      <div className="fav-card__actions">
-        <button
-          className={`fav-btn-cart ${added ? 'fav-btn-cart--added' : ''}`}
-          onClick={handleAddToCart}
-        >
-          {added ? '✓ Добавлено!' : '🛒 В корзину'}
-        </button>
+      <div className="fav-card__info">
+        <h3 className="fav-card__name">{name}</h3>
+        {article && <p className="fav-card__article">Арт. {article}</p>}
+        
+        {price ? (
+          <p className="fav-card__price">
+            {Number(price).toLocaleString('ru-RU')} ₸
+          </p>
+        ) : (
+          <p className="fav-card__price fav-card__price--ask">
+            Цена по запросу
+          </p>
+        )}
 
-        <a
-          href={telegramLink}
-          target="_blank"
-          rel="noreferrer"
-          className="fav-btn-order"
-        >
-          📋 Оставить заявку
-        </a>
+        <div className="fav-card__actions">
+          <button
+            className={`fav-btn-cart ${added ? 'fav-btn-cart--added' : ''}`}
+            onClick={handleAddToCart}
+            disabled={added}
+            type="button"
+          >
+            {added ? '✓ Добавлено!' : '🛒 В корзину'}
+          </button>
+
+          <a
+            href={telegramLink}
+            target="_blank"
+            rel="noreferrer noopener"
+            className="fav-btn-order"
+          >
+            📋 Оставить заявку
+          </a>
+        </div>
       </div>
-    </div>
+    </article>
   )
-}
+})
 
 export default function FavoritesPage() {
-  const { favorites } = useFavorites()
+  const { favorites, isLoading } = useFavorites()
   const { user, setShowModal } = useAuth()
+
+  if (isLoading) {
+    return <div className="fav-page"><p style={{textAlign:'center', paddingTop:'100px'}}>Загрузка...</p></div>
+  }
 
   if (!user) {
     return (
       <div className="fav-empty">
-        <span>🔒</span>
+        <span style={{fontSize: '50px', display:'block', marginBottom:'10px'}}>🔒</span>
         <h2>Войдите в аккаунт</h2>
-        <p>Чтобы видеть избранные товары, нужно авторизоваться</p>
+        <p>Чтобы сохранять товары, нужно авторизоваться</p>
         <button onClick={() => setShowModal(true)} className="fav-login-btn">
           Войти / Зарегистрироваться
         </button>
@@ -83,19 +128,19 @@ export default function FavoritesPage() {
     )
   }
 
-  if (favorites.length === 0) {
+  if (!favorites || favorites.length === 0) {
     return (
       <div className="fav-empty">
-        <span>♡</span>
-        <h2>Список избранного пуст</h2>
-        <p>Добавляйте товары в избранное нажав на кнопку ❤</p>
-        <Link to="/secondpage" className="fav-login-btn">Перейти в каталог</Link>
+        <span style={{fontSize: '50px', display:'block', marginBottom:'10px'}}>♡</span>
+        <h2>Список пуст</h2>
+        <p>Нажмите ❤ на товаре, чтобы добавить его сюда</p>
+        <Link to="/catalog" className="fav-login-btn">Перейти в каталог</Link>
       </div>
     )
   }
 
   return (
-    <div className="fav-page">
+    <main className="fav-page">
       <div className="fav-breadcrumb">
         <Link to="/">Главная</Link> / <span>Избранное</span>
       </div>
@@ -105,10 +150,13 @@ export default function FavoritesPage() {
       </h1>
 
       <div className="fav-grid">
-        {favorites.map(item => (
-          <FavCard key={item.id} item={item} />
+        {favorites.map((item, index) => (
+          <FavCard 
+            key={item.id || item.article || `fav-${index}`} 
+            item={item} 
+          />
         ))}
       </div>
-    </div>
+    </main>
   )
 }
