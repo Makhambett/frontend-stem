@@ -2,7 +2,8 @@ import { createContext, useContext, useState, useEffect } from 'react'
 import { useUserEmail } from './UserEmailContext'
 import { login as apiLogin, register as apiRegister, logout as apiLogout, getCurrentUser } from '../api/api'
 
-const AuthContext = createContext()
+// ✅ Создаём контекст
+const AuthContext = createContext(null)
 
 // ✅ Базовый URL для прямого fetch (если нужно)
 const API_BASE = 
@@ -19,50 +20,44 @@ export function AuthProvider({ children }) {
   // Проверка токена при загрузке
   useEffect(() => {
     const checkAuth = async () => {
-      const token = localStorage.getItem('stem_access_token')
-      
-      if (token) {
-        try {
+      try {
+        const token = localStorage.getItem('stem_access_token')
+        
+        if (token) {
           const userData = await getCurrentUser(token)
           setUser(userData)
           setUserEmail(userData.email)
-        } catch (err) {
-          console.error('Auth check error:', err)
-          localStorage.removeItem('stem_access_token')
         }
+      } catch (err) {
+        console.error('Auth check error:', err)
+        localStorage.removeItem('stem_access_token')
+      } finally {
+        // ✅ Всегда завершаем загрузку, даже если была ошибка
+        setLoading(false)
       }
-      setLoading(false)
     }
     
     checkAuth()
-  }, [])
+  }, [setUserEmail])
 
   const register = async (name, email, password) => {
-    try {
-      const data = await apiRegister(email, password, name)
-      localStorage.setItem('stem_access_token', data.access_token)
-      const userData = await getCurrentUser(data.access_token)
-      setUser(userData)
-      setUserEmail(userData.email)
-      setShowModal(false)
-      return userData
-    } catch (err) {
-      throw err
-    }
+    const data = await apiRegister(email, password, name)
+    localStorage.setItem('stem_access_token', data.access_token)
+    const userData = await getCurrentUser(data.access_token)
+    setUser(userData)
+    setUserEmail(userData.email)
+    setShowModal(false)
+    return userData
   }
 
   const login = async (email, password) => {
-    try {
-      const data = await apiLogin(email, password)
-      localStorage.setItem('stem_access_token', data.access_token)
-      const userData = await getCurrentUser(data.access_token)
-      setUser(userData)
-      setUserEmail(userData.email)
-      setShowModal(false)
-      return userData
-    } catch (err) {
-      throw err
-    }
+    const data = await apiLogin(email, password)
+    localStorage.setItem('stem_access_token', data.access_token)
+    const userData = await getCurrentUser(data.access_token)
+    setUser(userData)
+    setUserEmail(userData.email)
+    setShowModal(false)
+    return userData
   }
 
   const logout = () => {
@@ -74,10 +69,8 @@ export function AuthProvider({ children }) {
   const openModal = () => setShowModal(true)
   const closeModal = () => setShowModal(false)
 
-  if (loading) {
-    return <div style={{ display: 'none' }}>{children}</div>
-  }
-
+  // ✅ ВАЖНО: Provider рендерится ВСЕГДА, даже во время загрузки!
+  // Только внутри него мы можем условно рендерить children или лоадер
   return (
     <AuthContext.Provider value={{ 
       user, 
@@ -87,16 +80,19 @@ export function AuthProvider({ children }) {
       showModal, 
       openModal, 
       closeModal,
-      isAuthenticated: !!user 
+      isAuthenticated: !!user,
+      loading  // ✅ Экспортируем состояние загрузки для детей
     }}>
+      {/* ✅ children рендерятся всегда, но можно добавить лоадер внутри если нужно */}
       {children}
     </AuthContext.Provider>
   )
 }
 
+// ✅ Хук с защитой от использования вне провайдера
 export const useAuth = () => {
   const context = useContext(AuthContext)
-  if (!context) {
+  if (context === null) {
     throw new Error('useAuth must be used within AuthProvider')
   }
   return context
