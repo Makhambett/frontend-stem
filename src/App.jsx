@@ -7,6 +7,7 @@ import FloatingButtons from './components/FloatingButtons'
 import AIWelcome from './components/AIWelcome'
 import CartDrawer from './components/CartDrawer'
 import AuthModal from './components/AuthModal'
+import RoqedPage from './pages/digital/RoqedPage'
 
 // Страницы
 import FirstPage from './pages/FirstPage'
@@ -111,7 +112,7 @@ export default function App() {
         {/* Оборудование */}
         <Route path="/equipment/ulab" element={<Ulab />} />
         <Route path="/equipment/labdisc" element={<Labdisc />} />
-        
+        <Route path="/digital/roqed" element={<RoqedPage />} />
         {/* Декор */}
         <Route path="/decor/gos" element={<Gos />} />
         <Route path="/decor/3dpanels" element={<Panels3D />} />
