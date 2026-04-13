@@ -48,7 +48,7 @@ import Peregorodki from './pages/decor/Peregorodki'
 import Shtory from './pages/decor/Shtory'
 import Rasteniya from './pages/decor/Rasteniya'
 import Doski from './pages/decor/Doski'
-
+import Reception from './pages/categories/Reception'
 // Электротехника
 import InteractivePanels from './pages/electro/InteractivePanels'
 import Computers from './pages/electro/Computers'
@@ -57,7 +57,7 @@ import Stanki from './pages/electro/Stanki'
 import Bytovaya from './pages/electro/Bytovaya'
 import Printers3D from './pages/electro/Printers3D'
 import Stoly from './pages/categories/Stoly'
-
+import SpezStolyTecher from './pages/categories/SpezStolyTecher'
 // ==========================================
 // 🚀 ОСНОВНОЙ КОМПОНЕНТ APP (без хуков контекста!)
 // ==========================================
@@ -95,7 +95,7 @@ export default function App() {
         <Route path="/digital/stemplatform" element={<StemPlatformPage />} />
         {/* Страница товара */}
         <Route path="/product/:id" element={<ProductDetail />} />
-        
+        <Route path="/secondpage/stoly/reception" element={<Reception />} />
         {/* Категории мебели */}
         <Route path="/secondpage/divany" element={<Divany />} />
         <Route path="/secondpage/kreslo" element={<Kreslo />} />
@@ -130,6 +130,7 @@ export default function App() {
         <Route path="/electro/stanki" element={<Stanki />} />
         <Route path="/electro/bytovaya" element={<Bytovaya />} />
         <Route path="/electro/printers3d" element={<Printers3D />} />
+        <Route path="/secondpage/stoly/spets-teacher" element={<SpezStolyTecher />} />
       </Routes>
 
       {/* Футер */}
