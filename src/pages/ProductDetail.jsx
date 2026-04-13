@@ -5,7 +5,6 @@ import { useCart } from '../context/CartContext'
 import { createApplication } from '../api/api'
 import './ProductDetail.css'
 
-// ✅ Базовый URL API (БЕЗ /api в конце!)
 const API_BASE_URL = 
   import.meta.env.VITE_API_URL_BACKEND || 
   import.meta.env.VITE_API_URL || 
@@ -30,31 +29,31 @@ export default function ProductDetail() {
       try {
         setLoading(true)
         setError(null)
-        
-        // ✅ Добавляем /api/ явно
         const url = `${API_BASE_URL}/api/products/${id}`
         const response = await fetch(url)
-        
         if (!response.ok) {
           if (response.status === 404) throw new Error('Товар не найден')
           throw new Error(`Ошибка сервера: ${response.status}`)
         }
-        
         const data = await response.json()
         setProduct(data)
-        
       } catch (err) {
         setError(err.message)
       } finally {
         setLoading(false)
       }
     }
-    
     if (id) loadProduct()
   }, [id])
 
+  // ✅ Нормализуем объект — добавляем name = title для корзины
   const handleAddToCart = () => {
-    if (product) addToCart(product)
+    if (product) {
+      addToCart({
+        ...product,
+        name: product.title,
+      })
+    }
   }
 
   const handleOpenModal = () => {
@@ -63,9 +62,7 @@ export default function ProductDetail() {
     setFormData({ name: '', phone: '', comment: '' })
   }
 
-  const handleCloseModal = () => {
-    setShowModal(false)
-  }
+  const handleCloseModal = () => setShowModal(false)
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
@@ -75,7 +72,6 @@ export default function ProductDetail() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setSubmitting(true)
-    
     try {
       const applicationData = {
         name: formData.name,
@@ -85,12 +81,9 @@ export default function ProductDetail() {
         article: product.article,
         product_url: window.location.href
       }
-
       await createApplication(applicationData)
       setSubmitSuccess(true)
-      
       setTimeout(() => setShowModal(false), 2000)
-      
     } catch (err) {
       console.error('Ошибка отправки заявки:', err)
       alert('Произошла ошибка при отправке заявки. Попробуйте снова.')
@@ -111,7 +104,11 @@ export default function ProductDetail() {
   const categoryName = getCategoryName(product?.category)
 
   if (loading) {
-    return <div className="product-loading"><div className="loading-spinner">Загрузка товара...</div></div>
+    return (
+      <div className="product-loading">
+        <div className="loading-spinner">Загрузка товара...</div>
+      </div>
+    )
   }
 
   if (error) {
@@ -151,8 +148,8 @@ export default function ProductDetail() {
         <div className="product-container">
           <div className="product-gallery">
             <div className="product-main-image">
-              <img 
-                src={product.img} 
+              <img
+                src={product.img}
                 alt={product.title}
                 className="main-image"
                 onError={(e) => { e.target.src = '/img/placeholder.png' }}
@@ -162,8 +159,10 @@ export default function ProductDetail() {
 
           <div className="product-info">
             <h1 className="product-title">{product.title}</h1>
-            
-            {product.description && <p className="product-description">{product.description}</p>}
+
+            {product.description && (
+              <p className="product-description">{product.description}</p>
+            )}
 
             {product.article && (
               <div className="product-article">
@@ -173,9 +172,13 @@ export default function ProductDetail() {
 
             {product.price && (
               <div className="product-price">
-                <span className="price-current">{Number(product.price).toLocaleString('ru-KZ')} ₸</span>
+                <span className="price-current">
+                  {Number(product.price).toLocaleString('ru-KZ')} ₸
+                </span>
                 {product.old_price && (
-                  <span className="price-old">{Number(product.old_price).toLocaleString('ru-KZ')} ₸</span>
+                  <span className="price-old">
+                    {Number(product.old_price).toLocaleString('ru-KZ')} ₸
+                  </span>
                 )}
               </div>
             )}
@@ -202,10 +205,10 @@ export default function ProductDetail() {
         <div className="modal-overlay" onClick={handleCloseModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <button className="modal-close" onClick={handleCloseModal}>×</button>
-            
+
             <h2 className="modal-title">📝 Оставить заявку</h2>
             <p className="modal-subtitle">
-              Товар: <strong>{product.title}</strong><br/>
+              Товар: <strong>{product.title}</strong><br />
               Артикул: {product.article}
             </p>
 
@@ -219,24 +222,49 @@ export default function ProductDetail() {
               <form onSubmit={handleSubmit} className="application-form">
                 <div className="form-group">
                   <label htmlFor="name">Ваше имя *</label>
-                  <input type="text" id="name" name="name" value={formData.name} onChange={handleInputChange} required placeholder="Иван Иванов" />
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    required
+                    placeholder="Иван Иванов"
+                  />
                 </div>
 
                 <div className="form-group">
                   <label htmlFor="phone">Телефон *</label>
-                  <input type="tel" id="phone" name="phone" value={formData.phone} onChange={handleInputChange} required placeholder="+7 (___) ___-__-__" />
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    required
+                    placeholder="+7 (___) ___-__-__"
+                  />
                 </div>
 
                 <div className="form-group">
                   <label htmlFor="comment">Комментарий</label>
-                  <textarea id="comment" name="comment" value={formData.comment} onChange={handleInputChange} placeholder="Дополнительная информация (необязательно)" rows="3" />
+                  <textarea
+                    id="comment"
+                    name="comment"
+                    value={formData.comment}
+                    onChange={handleInputChange}
+                    placeholder="Дополнительная информация (необязательно)"
+                    rows="3"
+                  />
                 </div>
 
                 <button type="submit" className="btn-submit" disabled={submitting}>
                   {submitting ? 'Отправка...' : 'Отправить заявку'}
                 </button>
 
-                <p className="form-note">🔒 Ваши данные защищены. Мы не передаём их третьим лицам.</p>
+                <p className="form-note">
+                  🔒 Ваши данные защищены. Мы не передаём их третьим лицам.
+                </p>
               </form>
             )}
           </div>
