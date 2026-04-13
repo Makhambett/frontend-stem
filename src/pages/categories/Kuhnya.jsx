@@ -67,7 +67,7 @@ export default function Kuhnya() {
 
         <div className="kuhnya-right">
           <img
-            src="/img/pagesecond/kuhnya/item1.png"
+            src="/img/pagesecond/kuhnya/item1.jpg"
             alt="Кухонный гарнитур"
             className="kuhnya-img"
             loading="lazy"
