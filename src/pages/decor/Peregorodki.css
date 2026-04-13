@@ -67,3 +67,20 @@
 @media (max-width: 768px) {
   .peregorodki-page { padding: 0 16px 40px; }
 }
+
+.peregorodki-soon {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background: #f0f0f0;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.peregorodki-soon__badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+}

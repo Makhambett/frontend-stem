@@ -53,7 +53,10 @@ export default function Stoly() {
               {cat.img ? (
                 <img src={cat.img} alt={cat.title} />
               ) : (
-                <div className="stoly-card__empty" />
+                <div className="stoly-card__soon">
+                  <span className="stoly-card__soon-badge">СКОРО</span>
+                  <span className="stoly-card__soon-text">СКОРО</span>
+                </div>
               )}
             </div>
           </Link>

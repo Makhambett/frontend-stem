@@ -3,8 +3,8 @@ import './Category.css'
 import './Stulya.css'
 
 const subcategories = [
-  { title: 'ВСТРОЕННЫЕ ШКАФЫ', img: '/img/pagesecond/shkafy/vstroenye.png', path: '/secondpage/shkafy/vstroenye' },
-  { title: 'СТАНДАРТНЫЕ ШКАФЫ', img: '/img/pagesecond/shkafy/standartnye.png', path: '/secondpage/shkafy/standartnye' },
+  { title: 'ВСТРОЕННЫЕ ШКАФЫ',   img: '/img/pagesecond/shkafy/vstroenye.png',   path: '/secondpage/shkafy/vstroenye' },
+  { title: 'СТАНДАРТНЫЕ ШКАФЫ',  img: '/img/pagesecond/shkafy/standartnye.png', path: '/secondpage/shkafy/standartnye' },
 ]
 
 export default function Shkafy() {
@@ -14,7 +14,24 @@ export default function Shkafy() {
       <main className="stulya-grid">
         {subcategories.map((cat, i) => (
           <Link key={i} to={cat.path} className="stulya-card">
-            <img src={cat.img} alt={cat.title} className="stulya-card__img" />
+            {cat.img ? (
+              <img
+                src={cat.img}
+                alt={cat.title}
+                className="stulya-card__img"
+                onError={(e) => {
+                  e.target.style.display = 'none'
+                  e.target.nextSibling.style.display = 'flex'
+                }}
+              />
+            ) : null}
+            <div
+              className="stulya-card__soon"
+              style={{ display: cat.img ? 'none' : 'flex' }}
+            >
+              <span className="stulya-card__soon-badge">СКОРО</span>
+              <span className="stulya-card__soon-text">СКОРО</span>
+            </div>
             <span className="stulya-card__title">{cat.title}</span>
           </Link>
         ))}

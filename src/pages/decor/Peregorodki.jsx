@@ -27,10 +27,25 @@ const products = [
 
 const telegramBase = 'https://t.me/stem_academia_bot?text='
 
+function ImgOrSoon({ src, alt }) {
+  const handleError = (e) => {
+    e.target.style.display = 'none'
+    e.target.nextSibling.style.display = 'flex'
+  }
+  return (
+    <>
+      <img src={src} alt={alt} onError={handleError} />
+      <div className="peregorodki-soon" style={{ display: 'none' }}>
+        <span className="peregorodki-soon__badge">СКОРО</span>
+        <span className="peregorodki-soon__text">СКОРО</span>
+      </div>
+    </>
+  )
+}
+
 export default function Peregorodki() {
   return (
     <div className="peregorodki-page">
-
       <div className="peregorodki-breadcrumb">
         <Link to="/" className="breadcrumb-link">Главная</Link>
         <span> / </span>
@@ -45,66 +60,49 @@ export default function Peregorodki() {
 
       <div className="peregorodki-list">
         {products.map((p) => (
-          <div key={p.id} className="divan-card">
-
-            <div className="divan-card__gallery">
+          <div key={p.id} className="peregorodki-card">
+            <div className="peregorodki-card__gallery">
               {p.img.length > 1 ? (
-                <div className="perego-multi-img">
+                <div className="peregorodki-card__multi">
                   {p.img.map((src, i) => (
-                    <img key={i} src={src} alt={p.title} className="perego-img-item" />
+                    <ImgOrSoon key={i} src={src} alt={p.title} />
                   ))}
                 </div>
               ) : (
-                <img src={p.img[0]} alt={p.title} className="divan-card__main-img" />
+                <ImgOrSoon src={p.img[0]} alt={p.title} />
               )}
             </div>
 
-            <div className="divan-card__info">
-              <h2 className="divan-card__title">{p.title}</h2>
-
-              <div className="divan-card__section">
-                <span className="divan-card__label">Описание:</span>
-                <p className="divan-card__desc">{p.description}</p>
-              </div>
-
-              <div className="divan-card__section">
-                <table className="divan-card__table">
-                  <tbody>
-                    <tr>
-                      <td>Артикул</td>
-                      <td>{p.article}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-
-              <div className="divan-card__delivery">
+            <div className="peregorodki-card__info">
+              <h2>{p.title}</h2>
+              <p className="peregorodki-card__desc">Описание:</p>
+              <p>{p.description}</p>
+              <table className="peregorodki-card__table">
+                <tbody>
+                  <tr><td>Артикул</td><td>{p.article}</td></tr>
+                </tbody>
+              </table>
+              <div className="peregorodki-card__delivery">
                 <span>🚚 Доставка по Казахстану</span>
                 <span>📍 Самовывоз: г. Астана, ул. Домалак-ана 26</span>
               </div>
-
-              <div className="divan-card__actions">
-                <a
-                  href={`${telegramBase}${encodeURIComponent(`Здравствуйте! Интересует: ${p.title}, Артикул: ${p.article}`)}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="btn-order"
-                >
-                  Оставить заявку
-                </a>
-                <button className="btn-favorite">❤ В избранное</button>
-              </div>
-
-              <div className="divan-card__share">
-                <button>↗ Поделиться</button>
-                <button>⚖ Сравнить</button>
+              <a
+                href={`${telegramBase}${encodeURIComponent(`Здравствуйте! Хочу узнать о товаре: ${p.title}, артикул: ${p.article}`)}`}
+                className="btn-order-full"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                📝 Оставить заявку
+              </a>
+              <div className="peregorodki-card__share">
+                <button type="button">❤ В избранное</button>
+                <button type="button">↗ Поделиться</button>
+                <button type="button">⚖ Сравнить</button>
               </div>
             </div>
-
           </div>
         ))}
       </div>
-
     </div>
   )
 }
