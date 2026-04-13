@@ -55,8 +55,7 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
 }
 
-/* Левая часть */
-
+/* Левая часть — галерея */
 .product-detail__gallery {
   position: sticky;
   top: 20px;
@@ -94,8 +93,7 @@
   font-weight: 700;
 }
 
-/* Правая часть */
-
+/* Правая часть — информация */
 .product-detail__info {
   flex: 1;
   min-width: 0;
@@ -186,7 +184,7 @@
 }
 
 /* =========================================
-   Кнопки
+   Кнопки действий
    ========================================= */
 
 .product-actions-group {
@@ -265,7 +263,6 @@
     opacity: 0;
     backdrop-filter: blur(0);
   }
-
   to {
     opacity: 1;
     backdrop-filter: blur(4px);
@@ -290,7 +287,6 @@
     opacity: 0;
     transform: translateY(40px) scale(0.95);
   }
-
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -345,7 +341,6 @@
 }
 
 /* Форма */
-
 .modal-form {
   display: flex;
   flex-direction: column;
@@ -398,7 +393,6 @@
 }
 
 /* Успешная отправка */
-
 .modal-success {
   padding: 32px 24px;
   background: linear-gradient(135deg, #eefaf1 0%, #d4f1d4 100%);
@@ -415,7 +409,6 @@
     opacity: 0;
     transform: scale(0.95);
   }
-
   to {
     opacity: 1;
     transform: scale(1);
@@ -430,7 +423,6 @@
 }
 
 /* Кнопка отправки */
-
 .modal-form .btn-order {
   width: 100%;
   margin-top: 8px;
@@ -542,7 +534,6 @@
     from {
       transform: translateY(100%);
     }
-
     to {
       transform: translateY(0);
     }
