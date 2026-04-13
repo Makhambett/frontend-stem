@@ -5,7 +5,6 @@ import { useFavorites } from '../context/FavoritesContext'
 import { useCart } from '../context/CartContext'
 import './ProductList.css'
 
-// ✅ ИСПРАВЛЕНО: убран VITE_API_URL из fallback
 const API_BASE_URL =
   import.meta.env.VITE_API_URL_BACKEND ||
   'http://localhost:8000'
@@ -66,7 +65,6 @@ function ApplicationModal({ product, onClose }) {
 
     setLoading(true)
     try {
-      // ✅ ИСПРАВЛЕНО: явно /api/applications/
       const response = await fetch(`${API_BASE_URL}/api/applications/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -158,11 +156,22 @@ function ApplicationModal({ product, onClose }) {
   )
 }
 
+// ─── Заглушка "СКОРО" ─────────────────────────────────────────
+function ImagePlaceholder() {
+  return (
+    <div className="divan-card__no-img">
+      <span className="divan-card__soon-badge">СКОРО</span>
+      <span className="divan-card__soon-text">СКОРО</span>
+    </div>
+  )
+}
+
 // ─── Карточка товара ──────────────────────────────────────────
 function ProductCard({ product }) {
   const [showModal, setShowModal] = useState(false)
   const [activeColor, setActiveColor] = useState(0)
   const [addedToCart, setAddedToCart] = useState(false)
+  const [imgError, setImgError] = useState(false)
 
   const { t } = useLang()
   const { toggleFavorite, isFavorite } = useFavorites()
@@ -174,6 +183,7 @@ function ProductCard({ product }) {
   const colors = product.colors || []
 
   const inFavorite = isFavorite(product.id)
+  const showPlaceholder = !img || imgError
 
   const handleClose = useCallback(() => setShowModal(false), [])
 
@@ -197,7 +207,17 @@ function ProductCard({ product }) {
     <>
       <div className="divan-card">
         <div className="divan-card__gallery">
-          <img src={img} alt={product.title} className="divan-card__main-img" loading="lazy" />
+          {showPlaceholder ? (
+            <ImagePlaceholder />
+          ) : (
+            <img
+              src={img}
+              alt={product.title}
+              className="divan-card__main-img"
+              loading="lazy"
+              onError={() => setImgError(true)}
+            />
+          )}
           {product.in_stock === false && (
             <span className="badge-out">Нет в наличии</span>
           )}
