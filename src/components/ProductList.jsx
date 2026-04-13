@@ -8,27 +8,18 @@ import './ProductList.css'
 const API_BASE_URL =
   import.meta.env.VITE_API_URL_BACKEND || 'http://localhost:8000'
 
+// ─── Модалка заявки ───────────────────────────────────────────
 function ApplicationModal({ product, onClose }) {
-  const [form, setForm] = useState({
-    name: '',
-    phone: '',
-    username: '',
-    comment: '',
-  })
-
+  const [form, setForm] = useState({ name: '', phone: '', username: '', comment: '' })
   const [sent, setSent] = useState(false)
   const [loading, setLoading] = useState(false)
   const [phoneError, setPhoneError] = useState('')
   const [nameError, setNameError] = useState('')
 
   useEffect(() => {
-    const handler = (e) => {
-      if (e.key === 'Escape') onClose()
-    }
-
+    const handler = (e) => { if (e.key === 'Escape') onClose() }
     document.addEventListener('keydown', handler)
     document.body.style.overflow = 'hidden'
-
     return () => {
       document.removeEventListener('keydown', handler)
       document.body.style.overflow = 'unset'
@@ -37,9 +28,7 @@ function ApplicationModal({ product, onClose }) {
 
   const validateName = (name) => {
     const cleaned = name.trim().replace(/\s+/g, ' ')
-    return /^[A-Za-zА-Яа-яӘәҒғҚқҢңӨөҰұҮүҺһІіЁё]+(?:[ -][A-Za-zА-Яа-яӘәҒғҚқҢңӨөҰұҮүҺһІіЁё]+)*$/.test(
-      cleaned
-    )
+    return /^[A-Za-zА-Яа-яӘәҒғҚқҢңӨөҰұҮүҺһІіЁё]+(?:[ -][A-Za-zА-Яа-яӘәҒғҚқҢңӨөҰұҮүҺһІіЁё]+)*$/.test(cleaned)
   }
 
   const validatePhone = (phone) => {
@@ -49,39 +38,26 @@ function ApplicationModal({ product, onClose }) {
 
   const formatPhone = (value) => {
     let digits = value.replace(/\D/g, '')
-
-    if (digits.startsWith('8')) {
-      digits = '7' + digits.slice(1)
-    }
-
+    if (digits.startsWith('8')) digits = '7' + digits.slice(1)
     if (digits.startsWith('7')) {
       digits = digits.slice(0, 11)
-
       const p1 = digits.slice(1, 4)
       const p2 = digits.slice(4, 7)
       const p3 = digits.slice(7, 9)
       const p4 = digits.slice(9, 11)
-
-      let formatted = '+7'
-
-      if (p1) formatted += ` (${p1}`
-      if (p1.length === 3) formatted += ')'
-      if (p2) formatted += ` ${p2}`
-      if (p3) formatted += `-${p3}`
-      if (p4) formatted += `-${p4}`
-
-      return formatted
+      let f = '+7'
+      if (p1) f += ` (${p1}`
+      if (p1.length === 3) f += ')'
+      if (p2) f += ` ${p2}`
+      if (p3) f += `-${p3}`
+      if (p4) f += `-${p4}`
+      return f
     }
-
     return value
   }
 
   const handleNameChange = (e) => {
-    const filtered = e.target.value.replace(
-      /[^A-Za-zА-Яа-яӘәҒғҚқҢңӨөҰұҮүҺһІіЁё\s-]/g,
-      ''
-    )
-
+    const filtered = e.target.value.replace(/[^A-Za-zА-Яа-яӘәҒғҚқҢңӨөҰұҮүҺһІіЁё\s-]/g, '')
     setForm((prev) => ({ ...prev, name: filtered }))
     setNameError('')
   }
@@ -92,40 +68,30 @@ function ApplicationModal({ product, onClose }) {
     setPhoneError('')
   }
 
+  const handlePhoneKeyDown = (e) => {
+    const controlKeys = ['Backspace','Delete','ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Tab','Enter','Home','End']
+    const isDigit = /^\d$/.test(e.key)
+    const isAllowed = ['+', '-', ' '].includes(e.key)
+    const isControl = controlKeys.includes(e.key)
+    const isShortcut = e.ctrlKey || e.metaKey
+    if (!isDigit && !isAllowed && !isControl && !isShortcut) e.preventDefault()
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
-
     const cleanName = form.name.trim().replace(/\s+/g, ' ')
     const cleanPhone = form.phone.trim()
 
-    if (!cleanName || cleanName.length < 2) {
-      setNameError('Имя должно содержать минимум 2 символа')
-      return
-    }
-
-    if (!validateName(cleanName)) {
-      setNameError('Введите имя только буквами')
-      return
-    }
-
-    if (!cleanPhone) {
-      setPhoneError('Введите номер телефона')
-      return
-    }
-
-    if (!validatePhone(cleanPhone)) {
-      setPhoneError('Введите корректный номер телефона')
-      return
-    }
+    if (!cleanName || cleanName.length < 2) { setNameError('Имя должно содержать минимум 2 символа'); return }
+    if (!validateName(cleanName)) { setNameError('Введите имя только буквами'); return }
+    if (!cleanPhone) { setPhoneError('Введите номер телефона'); return }
+    if (!validatePhone(cleanPhone)) { setPhoneError('Введите корректный номер телефона'); return }
 
     setLoading(true)
-
     try {
       const response = await fetch(`${API_BASE_URL}/api/applications/`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: cleanName,
           phone: cleanPhone,
@@ -136,11 +102,7 @@ function ApplicationModal({ product, onClose }) {
           product_url: window.location.href,
         }),
       })
-
-      if (!response.ok) {
-        throw new Error('Ошибка отправки')
-      }
-
+      if (!response.ok) throw new Error('Ошибка отправки')
       setSent(true)
     } catch {
       alert('Не удалось отправить заявку. Попробуйте позже.')
@@ -152,9 +114,7 @@ function ApplicationModal({ product, onClose }) {
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-box" onClick={(e) => e.stopPropagation()}>
-        <button className="modal-close" onClick={onClose} type="button">
-          ×
-        </button>
+        <button className="modal-close" onClick={onClose} type="button">×</button>
 
         {sent ? (
           <div className="modal-success">
@@ -165,10 +125,7 @@ function ApplicationModal({ product, onClose }) {
           <>
             <h3 className="modal-title">Оставить заявку</h3>
             <p className="modal-product-name">{product.title}</p>
-
-            {product.article && (
-              <p className="modal-article">Артикул: {product.article}</p>
-            )}
+            {product.article && <p className="modal-article">Артикул: {product.article}</p>}
 
             <form className="modal-form" onSubmit={handleSubmit}>
               <div>
@@ -187,14 +144,14 @@ function ApplicationModal({ product, onClose }) {
                 <input
                   className="modal-input"
                   type="tel"
+                  inputMode="numeric"
                   placeholder="+7 (777) 123-45-67"
                   value={form.phone}
                   onChange={handlePhoneChange}
+                  onKeyDown={handlePhoneKeyDown}
                   required
                 />
-                {phoneError && (
-                  <span className="modal-error">{phoneError}</span>
-                )}
+                {phoneError && <span className="modal-error">{phoneError}</span>}
               </div>
 
               <div>
@@ -203,12 +160,7 @@ function ApplicationModal({ product, onClose }) {
                   type="text"
                   placeholder="Telegram username (необязательно)"
                   value={form.username}
-                  onChange={(e) =>
-                    setForm((prev) => ({
-                      ...prev,
-                      username: e.target.value,
-                    }))
-                  }
+                  onChange={(e) => setForm((prev) => ({ ...prev, username: e.target.value }))}
                 />
               </div>
 
@@ -217,12 +169,7 @@ function ApplicationModal({ product, onClose }) {
                   className="modal-input modal-textarea"
                   placeholder="Комментарий"
                   value={form.comment}
-                  onChange={(e) =>
-                    setForm((prev) => ({
-                      ...prev,
-                      comment: e.target.value,
-                    }))
-                  }
+                  onChange={(e) => setForm((prev) => ({ ...prev, comment: e.target.value }))}
                 />
               </div>
 
@@ -237,6 +184,7 @@ function ApplicationModal({ product, onClose }) {
   )
 }
 
+// ─── Заглушка СКОРО ───────────────────────────────────────────
 function ImagePlaceholder() {
   return (
     <div className="divan-card__no-img">
@@ -246,6 +194,7 @@ function ImagePlaceholder() {
   )
 }
 
+// ─── Карточка товара ──────────────────────────────────────────
 function ProductCard({ product }) {
   const [showModal, setShowModal] = useState(false)
   const [activeColor, setActiveColor] = useState(0)
@@ -257,34 +206,18 @@ function ProductCard({ product }) {
   const { addToCart } = useCart()
 
   const img = Array.isArray(product.imgs) ? product.imgs[0] : product.img
-  const size = Array.isArray(product.size)
-    ? product.size.join(', ')
-    : product.size
-  const material = Array.isArray(product.material)
-    ? product.material.join(', ')
-    : product.material
+  const size = Array.isArray(product.size) ? product.size.join(', ') : product.size
+  const material = Array.isArray(product.material) ? product.material.join(', ') : product.material
   const colors = product.colors || []
-
   const inFavorite = isFavorite(product.id)
   const showPlaceholder = !img || imgError
 
   const handleClose = useCallback(() => setShowModal(false), [])
 
   const handleAddToCart = () => {
-    addToCart({
-      id: product.id,
-      name: product.title,
-      image: img,
-      price: product.price || 0,
-      article: product.article,
-    })
-
+    addToCart({ id: product.id, name: product.title, image: img, price: product.price || 0, article: product.article })
     setAddedToCart(true)
     setTimeout(() => setAddedToCart(false), 2000)
-  }
-
-  const handleFavoriteClick = () => {
-    toggleFavorite(product)
   }
 
   return (
@@ -302,10 +235,7 @@ function ProductCard({ product }) {
               onError={() => setImgError(true)}
             />
           )}
-
-          {product.in_stock === false && (
-            <span className="badge-out">Нет в наличии</span>
-          )}
+          {product.in_stock === false && <span className="badge-out">Нет в наличии</span>}
         </div>
 
         <div className="divan-card__info">
@@ -317,14 +247,11 @@ function ProductCard({ product }) {
               <span className="divan-card__label">
                 Цвет: <strong>{colors[activeColor]?.name || 'Стандарт'}</strong>
               </span>
-
               <div className="divan-card__colors">
                 {colors.map((color, index) => (
                   <button
                     key={index}
-                    className={`color-dot ${
-                      index === activeColor ? 'active' : ''
-                    }`}
+                    className={`color-dot ${index === activeColor ? 'active' : ''}`}
                     style={{ backgroundColor: color.hex }}
                     onClick={() => setActiveColor(index)}
                     title={color.name}
@@ -337,29 +264,11 @@ function ProductCard({ product }) {
 
           <div className="divan-card__section">
             <span className="divan-card__label">Характеристики:</span>
-
             <table className="divan-card__table">
               <tbody>
-                {material && (
-                  <tr>
-                    <td>{t.material || 'Материал'}</td>
-                    <td>{material}</td>
-                  </tr>
-                )}
-
-                {size && (
-                  <tr>
-                    <td>Размеры</td>
-                    <td>{size}</td>
-                  </tr>
-                )}
-
-                {product.article && (
-                  <tr>
-                    <td>Артикул</td>
-                    <td>{product.article}</td>
-                  </tr>
-                )}
+                {material && <tr><td>{t.material || 'Материал'}</td><td>{material}</td></tr>}
+                {size && <tr><td>Размеры</td><td>{size}</td></tr>}
+                {product.article && <tr><td>Артикул</td><td>{product.article}</td></tr>}
               </tbody>
             </table>
           </div>
@@ -378,10 +287,9 @@ function ProductCard({ product }) {
             >
               {addedToCart ? '✓ Добавлено!' : '🛒 В корзину'}
             </button>
-
             <button
               className={`btn-favorite ${inFavorite ? 'active' : ''}`}
-              onClick={handleFavoriteClick}
+              onClick={() => toggleFavorite(product)}
               type="button"
               aria-pressed={inFavorite}
             >
@@ -389,23 +297,23 @@ function ProductCard({ product }) {
             </button>
           </div>
 
-          <button
-            className="btn-order-full"
-            onClick={() => setShowModal(true)}
-            type="button"
-          >
+          <button className="btn-order-full" onClick={() => setShowModal(true)} type="button">
             📝 Оставить заявку
           </button>
+
+          <div className="divan-card__share">
+            <button type="button">↗ {t.share || 'Поделиться'}</button>
+            <button type="button">⚖ {t.compare_btn || 'Сравнить'}</button>
+          </div>
         </div>
       </div>
 
-      {showModal && (
-        <ApplicationModal product={product} onClose={handleClose} />
-      )}
+      {showModal && <ApplicationModal product={product} onClose={handleClose} />}
     </>
   )
 }
 
+// ─── Основной компонент ───────────────────────────────────────
 export default function ProductList({ products, title, backPath, backLabel }) {
   const { t } = useLang()
 
@@ -414,9 +322,7 @@ export default function ProductList({ products, title, backPath, backLabel }) {
       <div className="divany-page">
         <div className="empty-state">
           <h2>😕 Товары не найдены</h2>
-          <Link to={backPath} className="btn-back">
-            ← Вернуться назад
-          </Link>
+          <Link to={backPath} className="btn-back">← Вернуться назад</Link>
         </div>
       </div>
     )
@@ -425,21 +331,14 @@ export default function ProductList({ products, title, backPath, backLabel }) {
   return (
     <div className="divany-page">
       <div className="divany-breadcrumb">
-        <Link to="/" className="breadcrumb-link">
-          {t.home || 'Главная'}
-        </Link>
-
+        <Link to="/" className="breadcrumb-link">{t.home || 'Главная'}</Link>
         <span> / </span>
-
         {backPath && (
           <>
-            <Link to={backPath} className="breadcrumb-link">
-              {backLabel || 'Каталог'}
-            </Link>
+            <Link to={backPath} className="breadcrumb-link">{backLabel || 'Каталог'}</Link>
             <span> / </span>
           </>
         )}
-
         <span>{title}</span>
       </div>
 
