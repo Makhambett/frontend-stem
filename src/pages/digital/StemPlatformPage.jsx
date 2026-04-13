@@ -10,7 +10,7 @@ export default function StemPlatformPage() {
 
       <div className="stemplatform-layout">
 
-        {/* ЛЕВАЯ КОЛОНКА */}
+        {/* ЛЕВАЯ КОЛОНКА — только текст */}
         <div className="stemplatform-left">
           <div className="stemplatform-card">
             <h1>STEM PLATFORM</h1>
@@ -23,20 +23,18 @@ export default function StemPlatformPage() {
               tristique elementum sit amet vel nibh. In euismod lorem turpis, ac tempus eros
               vestibulum sed.
             </p>
-
-            <div className="stemplatform-image-block">
-              <img
-                src="/img/pagethird/computers/item2.png"
-                alt="STEM Platform"
-              />
-            </div>
-
             <div className="stemplatform-article">Артикул: S.Ee-PC.MB.AVT.Pro</div>
           </div>
         </div>
 
-        {/* ПРАВАЯ КОЛОНКА — пустая как на макете */}
-        <div className="stemplatform-right" />
+        {/* ПРАВАЯ КОЛОНКА — только картинка */}
+        <div className="stemplatform-right">
+          <img
+            src="/img/pagethird/computers/item2.png"
+            alt="STEM Platform"
+            className="stemplatform-img"
+          />
+        </div>
 
       </div>
     </div>

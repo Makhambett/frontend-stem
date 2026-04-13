@@ -56,6 +56,7 @@ import InfoKiosk from './pages/electro/InfoKiosk'
 import Stanki from './pages/electro/Stanki'
 import Bytovaya from './pages/electro/Bytovaya'
 import Printers3D from './pages/electro/Printers3D'
+import Stoly from './pages/categories/Stoly'
 
 // ==========================================
 // 🚀 ОСНОВНОЙ КОМПОНЕНТ APP (без хуков контекста!)
@@ -121,7 +122,7 @@ export default function App() {
         <Route path="/decor/shtory" element={<Shtory />} />
         <Route path="/decor/rasteniya" element={<Rasteniya />} />
         <Route path="/decor/doski" element={<Doski />} />
-        
+        <Route path="/secondpage/stoly" element={<Stoly />} />
         {/* Электротехника */}
         <Route path="/electro/interactive" element={<InteractivePanels />} />
         <Route path="/electro/computers" element={<Computers />} />
