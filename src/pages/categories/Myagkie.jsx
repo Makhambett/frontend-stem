@@ -6,7 +6,7 @@ const products = [
     id: 1,
     title: 'МЯГКИЙ СТУЛ 1',
     img: '/img/pagesecond/stulya/myagkie/stul7.png',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris mi quam, euismod quis mi quis, dapibus porta ante. Aenean mi arcu, dapibus quis ornare eget, porta id mi.',
+    description: 'Мягкий и комфортный стул с плотной обивкой и надёжным основанием, идеально подходящий для длительного сидения и уютных интерьеров.',
     material: ['Синтепон', 'Мягкая поверхность', 'Велкор', 'Пластмассовые ножки'],
     size: '450x450x900',
     colors: [
@@ -21,7 +21,7 @@ const products = [
     id: 2,
     title: 'МЯГКИЙ СТУЛ 2',
     img: '/img/pagesecond/stulya/myagkie/stul8.png',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris mi quam, euismod quis mi quis, dapibus porta ante. Aenean mi arcu, dapibus quis ornare eget, porta id mi.',
+    description: 'Мягкий и комфортный стул с плотной обивкой и надёжным основанием, идеально подходящий для длительного сидения и уютных интерьеров.',
     material: ['Синтепон', 'Мягкая поверхность', 'Велкор', 'Пластмассовые ножки'],
     size: '450x450x900',
     colors: [
@@ -36,7 +36,7 @@ const products = [
     id: 3,
     title: 'МЯГКИЙ СТУЛ 3',
     img: '/img/pagesecond/stulya/myagkie/stul9.png',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris mi quam, euismod quis mi quis, dapibus porta ante. Aenean mi arcu, dapibus quis ornare eget, porta id mi.',
+    description: 'Мягкий и комфортный стул с плотной обивкой и надёжным основанием, идеально подходящий для длительного сидения и уютных интерьеров.',
     material: ['Синтепон', 'Мягкая поверхность', 'Велкор', 'Пластмассовые ножки'],
     size: '450x450x900',
     colors: [

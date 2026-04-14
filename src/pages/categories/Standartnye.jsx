@@ -5,7 +5,7 @@ const products = Array.from({ length: 3 }, (_, i) => ({
   id: i + 1,
   title: `СТАНДАРТНЫЙ ШКАФ ${i + 1}`,
   img: `/img/pagesecond/shkafy/standartnye/shkaf${i + 1}.png`,
-  description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris mi quam, euismod quis mi quis, dapibus porta ante. Aenean mi arcu, dapibus quis ornare eget, porta id mi.',
+  description: 'Функциональный стандартный шкаф из качественных мебельных панелей с универсальным дизайном и прочной фурнитурой.',
   material: ['ДСП', 'МДФ', 'Фурнитура металлическая', 'Зеркальные вставки'],
   size: '1800x600x2200',
   colors: [

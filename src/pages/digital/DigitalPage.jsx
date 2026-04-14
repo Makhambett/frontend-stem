@@ -11,13 +11,13 @@ const row2 = [
     title: 'ИНФО СТЕНДЫ',
     img: '/img/pagedigital/infostend.png',
     path: '/digital/infostend',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris mi quam, euismod quis mi quis, dapibus porta ante. Aenean mi arcu, dapibus quis ornare eget, porta id mi.',
+    description: 'Инфо-стенды для образовательных пространств с современным дизайном и удобной подачей материалов для учеников и преподавателей.',
   },
   {
     title: 'STEAM BOOK',
     img: '/img/pagedigital/steambook.png',
     path: '/digital/steambook',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris mi quam, euismod quis mi quis, dapibus porta ante. Aenean mi arcu, dapibus quis ornare eget, porta id mi.',
+    description: 'STEAM BOOK — интерактивный образовательный формат с цифровыми ресурсами, практическими заданиями и учебными материалами для STEM-программ.',
   },
 ]
 

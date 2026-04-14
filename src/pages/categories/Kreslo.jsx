@@ -111,7 +111,7 @@ const products = [
     id: 8,
     title: 'КРЕСЛО 8',
     img: '/img/pagesecond/kreslo/kreslo8.png',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    description: 'Комфортное кресло с регулировкой и мягкой обивкой, созданное для работы и отдыха с удобной посадкой.',
     material: ['Синтепон', 'Мягкая поверхность', 'Велкор', 'Пластмассовые ножки'],
     size: '900x850x450',
     colors: [
@@ -126,7 +126,7 @@ const products = [
     id: 9,
     title: 'КРЕСЛО 9',
     img: '/img/pagesecond/kreslo/kreslo9.png',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    description: 'Удобное кресло с износостойкой обивкой и устойчивой конструкцией, подходящее для длительного использования.',
     material: ['Синтепон', 'Мягкая поверхность', 'Велкор', 'Пластмассовые ножки'],
     size: '900x850x450',
     colors: [

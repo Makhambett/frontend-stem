@@ -6,7 +6,7 @@ const products = [
     id: 1,
     title: 'БАРНЫЙ СТУЛ 1',
     img: '/img/pagesecond/stulya/barnye/stul10.png',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris mi quam, euismod quis mi quis, dapibus porta ante. Aenean mi arcu, dapibus quis ornare eget, porta id mi.',
+    description: 'Высота 75 см, прочный металлический каркас и мягкая обивка делают этот барный стул удобным и стильным элементом любой кухни или бара.',
     material: ['Синтепон', 'Мягкая поверхность', 'Велкор', 'Металлические ножки'],
     size: '400x400x750',
     colors: [
@@ -21,7 +21,7 @@ const products = [
     id: 2,
     title: 'БАРНЫЙ СТУЛ 2',
     img: '/img/pagesecond/stulya/barnye/stul11.png',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris mi quam, euismod quis mi quis, dapibus porta ante. Aenean mi arcu, dapibus quis ornare eget, porta id mi.',
+    description: 'Высота 75 см, прочный металлический каркас и мягкая обивка делают этот барный стул удобным и стильным элементом любой кухни или бара.',
     material: ['Синтепон', 'Мягкая поверхность', 'Велкор', 'Металлические ножки'],
     size: '400x400x750',
     colors: [
@@ -36,7 +36,7 @@ const products = [
     id: 3,
     title: 'БАРНЫЙ СТУЛ 3',
     img: '/img/pagesecond/stulya/barnye/stul3.png',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris mi quam, euismod quis mi quis, dapibus porta ante. Aenean mi arcu, dapibus quis ornare eget, porta id mi.',
+    description: 'Высота 75 см, прочный металлический каркас и мягкая обивка делают этот барный стул удобным и стильным элементом любой кухни или бара.',
     material: ['Синтепон', 'Мягкая поверхность', 'Велкор', 'Металлические ножки'],
     size: '400x400x750',
     colors: [

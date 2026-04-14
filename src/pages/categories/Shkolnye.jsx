@@ -5,7 +5,7 @@ const products = Array.from({ length: 6 }, (_, i) => ({
   id: i + 1,
   title: `ШКОЛЬНЫЙ СТУЛ ${i + 1}`,
   img: `/img/pagesecond/stulya/shkolnye/stul${i + 1}.png`,
-  description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris mi quam, euismod quis mi quis, dapibus porta ante. Aenean mi arcu, dapibus quis ornare eget, porta id mi.',
+  description: 'Эргономичный школьный стул со стойкой конструкцией, лёгким уходом и устойчивой посадкой для учебных классов.',
   material: ['Синтепон', 'Мягкая поверхность', 'Велкор', 'Пластмассовые ножки'],
   size: '400x400x850',
   colors: [

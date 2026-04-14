@@ -15,13 +15,7 @@ export default function StemPlatformPage() {
           <div className="stemplatform-card">
             <h1>STEM PLATFORM</h1>
             <p className="stemplatform-desc">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque erat lacus,
-              tempus id interdum in, ullamcorper in lorem. Vestibulum vel nisl consectetur,
-              hendrerit nulla a, ornare risus. Fusce dolor nisi, rutrum eu placerat sed, rutrum sed
-              massa. Orci varius natoque penatibus et magnis dis parturient montes, nascetur
-              ridiculus mus. Fusce vitae scelerisque nulla. Donec euismod augue vitae metus
-              tristique elementum sit amet vel nibh. In euismod lorem turpis, ac tempus eros
-              vestibulum sed.
+              STEM PLATFORM — платформа для учебных проектов и цифрового управления классом. Она объединяет инструменты для интерактивного обучения, контроля прогресса и организации STEM-мероприятий.
             </p>
             <div className="stemplatform-article">Артикул: S.Ee-PC.MB.AVT.Pro</div>
           </div>

@@ -29,8 +29,8 @@ const products = [
     title: 'NAME_TEXT',
     img: '/img/pagethird/stanki/item3.png',
     description: [
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris mi quam, euismod quis mi quis, dapibus porta ante.',
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris mi quam, euismod quis mi quis, dapibus porta ante.',
+      'Учебный станок для освоения базовых технологий обработки материалов и моделирования, оптимизированный для практических занятий.',
+      'Оснащён безопасными механизмами и позволяет изучать точность обработки, сборку прототипов и конструирование изделий.',
     ],
     article: 'S.Me-ST.S.DP',
   },
