@@ -49,12 +49,27 @@
 .footer-socials a {
   color: #888;
   text-decoration: none;
-  font-size: 12px;
-  font-weight: 700;
-  padding: 6px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
   border: 1px solid #2d4739;
   border-radius: 6px;
-  transition: color 0.2s, border-color 0.2s;
+  transition: color 0.2s, border-color 0.2s, background-color 0.2s;
+}
+
+.footer-socials a:hover {
+  color: #1a2e25; /* Цвет иконки при наведении (можно оставить #52b788, если фон не меняется) */
+  background-color: #52b788;
+  border-color: #52b788;
+}
+
+/* Стили для самих SVG внутри кнопок */
+.footer-socials a svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
 }
 .footer-socials a:hover {
   color: #52b788;

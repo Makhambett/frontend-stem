@@ -40,6 +40,9 @@ export default function FloatingButtons() {
         </svg>
       </a>
 
+      {/* Instagram */}
+      
+
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { useLang } from '../i18n/LanguageContext'
 import { useFavorites } from '../context/FavoritesContext'
@@ -7,6 +7,9 @@ import './ProductList.css'
 
 const API_BASE_URL = import.meta.env.VITE_API_URL_BACKEND || 'http://localhost:8000'
 
+/**
+ * Модальное окно для отправки заявки
+ */
 function ApplicationModal({ product, onClose }) {
   const [form, setForm] = useState({
     name: '',
@@ -101,6 +104,11 @@ function ApplicationModal({ product, onClose }) {
     }
 
     setLoading(true)
+    
+    const finalComment = product.selectedColor 
+      ? `Выбранный цвет: ${product.selectedColor}\n${form.comment.trim()}`
+      : form.comment.trim()
+
     try {
       const response = await fetch(`${API_BASE_URL}/api/applications/`, {
         method: 'POST',
@@ -109,7 +117,7 @@ function ApplicationModal({ product, onClose }) {
           name: cleanName,
           phone: cleanPhone,
           username: form.username.trim(),
-          comment: form.comment.trim(),
+          comment: finalComment,
           product_name: product.title,
           article: product.article,
           product_url: window.location.href,
@@ -118,7 +126,7 @@ function ApplicationModal({ product, onClose }) {
       if (!response.ok) throw new Error('Ошибка отправки')
       setSent(true)
     } catch {
-      alert('Не удалось отправить заявку. Попробуйте позже.')
+      setSent(false)
     } finally {
       setLoading(false)
     }
@@ -136,8 +144,10 @@ function ApplicationModal({ product, onClose }) {
           <>
             <h3 className="modal-title">Оставить заявку</h3>
             <p className="modal-product-name">{product.title}</p>
-            {product.article && (
-              <p className="modal-article">Артикул: {product.article}</p>
+            {product.selectedColor && (
+              <p className="modal-selected-color" style={{ color: '#2f6f55', fontWeight: 'bold', marginBottom: '8px' }}>
+                Цвет: {product.selectedColor}
+              </p>
             )}
             <form onSubmit={handleSubmit} className="modal-form">
               <div className="modal-field">
@@ -199,6 +209,9 @@ function ImagePlaceholder() {
   )
 }
 
+/**
+ * Карточка отдельного товара
+ */
 function ProductCard({ product }) {
   const [showModal, setShowModal] = useState(false)
   const [addedToCart, setAddedToCart] = useState(false)
@@ -207,25 +220,46 @@ function ProductCard({ product }) {
   const { toggleFavorite, isFavorite } = useFavorites()
   const { addToCart } = useCart()
 
-  const img = Array.isArray(product.imgs) ? product.imgs[0] : product.img
+  const colors = useMemo(() => product.colors || [], [product.colors])
+  
+  const getInitialImg = useCallback(() => {
+    if (colors.length > 0 && colors[0].img) return colors[0].img
+    if (Array.isArray(product.imgs) && product.imgs.length > 0) return product.imgs[0]
+    return product.img || ''
+  }, [colors, product.imgs, product.img])
+
+  const [currentImg, setCurrentImg] = useState(getInitialImg())
+  const [activeColor, setActiveColor] = useState(colors.length > 0 ? colors[0].name : null)
+
+  useEffect(() => {
+    setCurrentImg(getInitialImg())
+    setActiveColor(colors.length > 0 ? colors[0].name : null)
+    setImgError(false)
+  }, [product.id, getInitialImg, colors])
+
   const size = Array.isArray(product.size) ? product.size.join(', ') : product.size
   const material = Array.isArray(product.material) ? product.material.join(', ') : product.material
-  const colors = product.colors || []
   const inFavorite = isFavorite(product.id)
-  const showPlaceholder = !img || imgError
+  const showPlaceholder = !currentImg || imgError
 
   const handleClose = useCallback(() => setShowModal(false), [])
 
   const handleAddToCart = () => {
     addToCart({
-      id: product.id,
-      name: product.title,
-      image: img,
-      price: product.price || 0,
-      article: product.article,
+      ...product,
+      image: currentImg,
+      color: activeColor
     })
     setAddedToCart(true)
     setTimeout(() => setAddedToCart(false), 2000)
+  }
+
+  const handleColorSelect = (color) => {
+    setActiveColor(color.name)
+    if (color.img) {
+      setCurrentImg(color.img)
+      setImgError(false)
+    }
   }
 
   return (
@@ -236,7 +270,7 @@ function ProductCard({ product }) {
             <ImagePlaceholder />
           ) : (
             <img
-              src={img}
+              src={currentImg}
               alt={product.title}
               className="divan-card__main-img"
               loading="lazy"
@@ -249,13 +283,36 @@ function ProductCard({ product }) {
         </div>
         <div className="divan-card__info">
           <h2 className="divan-card__title">{product.title}</h2>
-          <p className="divan-card__desc">{product.description}</p>
+          <p className="divan-card__desc">{product.description_ru || product.description}</p>
 
           {colors.length > 0 && (
-            <div className="divan-card__section">
+            <div className="divan-card__section color-selection">
               <span className="divan-card__label">
-                Цвет: По согласованию с заказчиком
+                Цвет: <strong style={{ color: '#2f6f55' }}>{activeColor}</strong>
               </span>
+              <div style={{ display: 'flex', gap: '10px', marginTop: '10px', flexWrap: 'wrap' }}>
+                {colors.map((color, idx) => (
+                  <button
+                    key={`${product.id}-color-${idx}`}
+                    type="button"
+                    onClick={() => handleColorSelect(color)}
+                    className={`color-circle-btn ${activeColor === color.name ? 'active' : ''}`}
+                    style={{
+                      backgroundColor: color.hex,
+                      width: '32px',
+                      height: '32px',
+                      borderRadius: '50%',
+                      border: activeColor === color.name ? '3px solid #2f6f55' : '1px solid #ddd',
+                      cursor: 'pointer',
+                      padding: 0,
+                      transition: 'all 0.2s ease',
+                      boxShadow: activeColor === color.name ? '0 0 0 2px white inset' : 'none',
+                      transform: activeColor === color.name ? 'scale(1.1)' : 'scale(1)'
+                    }}
+                    title={color.name}
+                  />
+                ))}
+              </div>
             </div>
           )}
 
@@ -285,11 +342,6 @@ function ProductCard({ product }) {
             </table>
           </div>
 
-          <div className="divan-card__delivery">
-            <span>🚚 {t.delivery || 'Доставка по Казахстану'}</span>
-            <span>📍 {t.pickup || 'Самовывоз'}</span>
-          </div>
-
           <div className="divan-card__actions">
             <button
               className="btn-add-to-cart"
@@ -303,7 +355,6 @@ function ProductCard({ product }) {
               className={`btn-favorite ${inFavorite ? 'active' : ''}`}
               onClick={() => toggleFavorite(product)}
               type="button"
-              aria-pressed={inFavorite}
             >
               ❤ {inFavorite ? 'В избранном' : 'В избранное'}
             </button>
@@ -319,7 +370,10 @@ function ProductCard({ product }) {
         </div>
       </div>
       {showModal && (
-        <ApplicationModal product={product} onClose={handleClose} />
+        <ApplicationModal 
+          product={{ ...product, selectedColor: activeColor }} 
+          onClose={handleClose} 
+        />
       )}
     </>
   )
@@ -333,7 +387,7 @@ export default function ProductList({ products, title, backPath, backLabel }) {
       <div className="divany-page">
         <div className="empty-state">
           <h2>😕 Товары не найдены</h2>
-          <Link to={backPath} className="btn-back">
+          <Link to={backPath || '/'} className="btn-back">
             ← Вернуться назад
           </Link>
         </div>

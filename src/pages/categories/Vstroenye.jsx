@@ -1,21 +1,52 @@
 import ProductList from '../../components/ProductList'
 import './Category.css'
 
-const products = Array.from({ length: 3 }, (_, i) => ({
-  id: i + 1,
-  title: `ВСТРОЕННЫЙ ШКАФ ${i + 1}`,
-  img: `/img/pagesecond/shkafy/vstroenye/shkaf${i + 1}.png`,
+const products = [{
+  id: 1,
+  title: `ВСТРОЕННЫЙ ШКАФ 1`,
+  img: `/img/pagesecond/shkafy/vstroenye/shkaf1/shkaf1.png`,
   description: 'Компактная модель для небольших помещений. Идеально подходит для прихожей, спальни или коридора. Внутреннее пространство организовано удобно - есть отделения для одежды, обуви и аксессуаров.',
   material: ['ДСП', 'МДФ', 'Фурнитура металлическая', 'Зеркальные вставки'],
   size: '2000x600x2400',
   colors: [
-    { name: 'Белый', hex: '#FFFFFF' },
-    { name: 'Венге', hex: '#3B1F0A' },
-    { name: 'Дуб сонома', hex: '#C8A97E' },
-    { name: 'Серый', hex: '#888888' },
+    { name: 'Белый', hex: '#FFFFFF', img: `/img/pagesecond/shkafy/vstroenye/shkaf1/shkaf1.png`},
+    { name: 'Венге', hex: '#9d5116', img: `/img/pagesecond/shkafy/vstroenye/shkaf1/shkaf2.png`},
+    { name: 'Дуб сонома', hex: '#C8A97E', img: `/img/pagesecond/shkafy/vstroenye/shkaf1/shkaf3.png`},
+    { name: 'Черный', hex: '#000000', img: `/img/pagesecond/shkafy/vstroenye/shkaf1/shkaf4.png`},
   ],
-  article: `L.Me-VS.UN.${200 + i}`,
-}))
+  article: `L.Me-VS.UN`,
+},
+{
+  id: 2,
+  title: `ВСТРОЕННЫЙ ШКАФ 2`,
+  img: `/img/pagesecond/shkafy/vstroenye/shkaf2/shkaf1.png`,
+  description: 'Компактная модель для небольших помещений. Идеально подходит для прихожей, спальни или коридора. Внутреннее пространство организовано удобно - есть отделения для одежды, обуви и аксессуаров.',
+  material: ['ДСП', 'МДФ', 'Фурнитура металлическая', 'Зеркальные вставки'],
+  size: '2000x600x2400',
+  colors: [
+    { name: 'Берюзовый', hex: '#2c8360', img: `/img/pagesecond/shkafy/vstroenye/shkaf2/shkaf1.png`},
+    { name: 'Дуб сонома', hex: '#C8A97E', img: `/img/pagesecond/shkafy/vstroenye/shkaf2/shkaf2.png`},
+    { name: 'Венге', hex: '#9d5116', img: `/img/pagesecond/shkafy/vstroenye/shkaf2/shkaf4.png`},
+    { name: 'Черный', hex: '#000000', img: `/img/pagesecond/shkafy/vstroenye/shkaf2/shkaf3.png`},
+    { name: 'Белый', hex: '#ffffff', img: `/img/pagesecond/shkafy/vstroenye/shkaf2/shkaf5.png`},
+  ],
+  article: `L.Me-VS.UN`,
+},
+{
+  id: 3,
+  title: `ВСТРОЕННЫЙ ШКАФ 3`,
+  img: `/img/pagesecond/shkafy/vstroenye/shkaf3/shkaf1.png`,
+  description: 'Компактная модель для небольших помещений. Идеально подходит для прихожей, спальни или коридора. Внутреннее пространство организовано удобно - есть отделения для одежды, обуви и аксессуаров.',
+  material: ['ДСП', 'МДФ', 'Фурнитура металлическая', 'Зеркальные вставки'],
+  size: '2000x600x2400',
+  colors: [
+    { name: 'Белый', hex: '#FFFFFF', img: `/img/pagesecond/shkafy/vstroenye/shkaf3/shkaf1.png`},
+    { name: 'Венге', hex: '#9d5116', img: `/img/pagesecond/shkafy/vstroenye/shkaf3/shkaf2.png`},
+    { name: 'Дуб сонома', hex: '#C8A97E', img: `/img/pagesecond/shkafy/vstroenye/shkaf3/shkaf3.png`},
+    { name: 'Черный', hex: '#000000', img: `/img/pagesecond/shkafy/vstroenye/shkaf3/shkaf4.png`},
+  ],
+  article: `L.Me-VS.UN`,
+}]
 
 export default function Vstroenye() {
   return (

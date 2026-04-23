@@ -2,8 +2,8 @@ import { Link } from 'react-router-dom'
 import './DigitalPage.css'
 
 const row1 = [
-  { title: 'ROQED SCIENCE',  img: '/img/pagedigital/roqed.png',         path: '/digital/roqed' },
-  { title: 'STEM PLATFORM',  img: '/img/pagedigital/stem-platform.png', path: '/digital/stemplatform' },
+  { title: 'ROQED SCIENCE',  img: '/img/pagedigital/roqed.jpg',         path: '/digital/roqed' },
+  { title: 'STEM PLATFORM',  img: '/img/pagedigital/stem-platform.jpg', path: '/digital/stemplatform' },
 ]
 
 const row2 = [
