@@ -10,6 +10,31 @@ const API_BASE_URL =
   import.meta.env.VITE_API_URL || 
   'http://localhost:8000'
 
+// ✅ Вспомогательная функция для безопасного форматирования цены
+function formatPrice(price) {
+  if (price === null || price === undefined || price === '') {
+    return '0 ₸'
+  }
+  const num = Number(price)
+  if (isNaN(num)) {
+    return '0 ₸'
+  }
+  return num.toLocaleString('ru-KZ') + ' ₸'
+}
+
+// ✅ Валидация телефона: 11 цифр (7+10) или 12 (8+10)
+function validatePhone(phone) {
+  const digits = phone.replace(/\D/g, '')
+  return digits.length === 11 || digits.length === 12
+}
+
+// ✅ Валидация имени: 2-50 символов, только буквы и пробелы
+function validateName(name) {
+  const cleaned = name.trim()
+  if (cleaned.length < 2 || cleaned.length > 50) return false
+  return /^[A-Za-zА-Яа-яӘәҒғҚқҢңӨөҰұҮүҺһІіЁё\s\-]+$/.test(cleaned)
+}
+
 export default function ProductDetail() {
   const { id } = useParams()
   const { t } = useLang()
@@ -71,12 +96,25 @@ export default function ProductDetail() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    
+    // ✅ ВАЛИДАЦИЯ ИМЕНИ
+    if (!validateName(formData.name)) {
+      alert('❌ Введите корректное имя (2-50 букв, без цифр и спецсимволов)')
+      return
+    }
+    
+    // ✅ ВАЛИДАЦИЯ ТЕЛЕФОНА
+    if (!validatePhone(formData.phone)) {
+      alert('❌ Введите корректный номер телефона (11 цифр, например: +7 700 123 45 67)')
+      return
+    }
+    
     setSubmitting(true)
     try {
       const applicationData = {
-        name: formData.name,
-        phone: formData.phone,
-        comment: formData.comment,
+        name: formData.name.trim(),
+        phone: formData.phone.trim(),
+        comment: formData.comment?.trim() || '',
         product_name: product.title,
         article: product.article,
         product_url: window.location.href
@@ -86,7 +124,14 @@ export default function ProductDetail() {
       setTimeout(() => setShowModal(false), 2000)
     } catch (err) {
       console.error('Ошибка отправки заявки:', err)
-      alert('Произошла ошибка при отправке заявки. Попробуйте снова.')
+      // ✅ Более понятные сообщения об ошибках
+      if (err.response?.status === 400) {
+        alert('❌ Проверьте правильность заполнения формы')
+      } else if (err.response?.status === 500) {
+        alert('⚠️ Сервер временно недоступен. Попробуйте позже')
+      } else {
+        alert('❌ Не удалось отправить заявку. Проверьте соединение')
+      }
     } finally {
       setSubmitting(false)
     }
@@ -170,14 +215,15 @@ export default function ProductDetail() {
               </div>
             )}
 
-            {product.price && (
+            {/* ✅ Безопасное отображение цены */}
+            {(product.price !== null && product.price !== undefined) && (
               <div className="product-price">
                 <span className="price-current">
-                  {Number(product.price).toLocaleString('ru-KZ')} ₸
+                  {formatPrice(product.price)}
                 </span>
                 {product.old_price && (
                   <span className="price-old">
-                    {Number(product.old_price).toLocaleString('ru-KZ')} ₸
+                    {formatPrice(product.old_price)}
                   </span>
                 )}
               </div>
@@ -230,6 +276,8 @@ export default function ProductDetail() {
                     onChange={handleInputChange}
                     required
                     placeholder="Иван Иванов"
+                    pattern="[A-Za-zА-Яа-яӘәҒғҚқҢңӨөҰұҮүҺһІіЁё\s\-]{2,50}"
+                    title="Только буквы, 2-50 символов"
                   />
                 </div>
 
@@ -241,8 +289,25 @@ export default function ProductDetail() {
                     name="phone"
                     value={formData.phone}
                     onChange={handleInputChange}
+                    onInput={(e) => {
+                      // ✅ Простая маска: оставляем только цифры и +
+                      let value = e.target.value.replace(/[^\d+]/g, '')
+                      if (value.startsWith('8')) {
+                        value = '+7' + value.slice(1)
+                      } else if (value.length > 0 && !value.startsWith('+')) {
+                        value = '+' + value
+                      }
+                      // Ограничиваем длину (+7 + 10 цифр = 12 символов)
+                      if (value.length > 12) {
+                        value = value.slice(0, 12)
+                      }
+                      e.target.value = value
+                      handleInputChange(e)
+                    }}
                     required
                     placeholder="+7 (___) ___-__-__"
+                    pattern="^\+7\d{10}$"
+                    title="Введите номер в формате: +7 700 123 45 67"
                   />
                 </div>
 
@@ -255,11 +320,12 @@ export default function ProductDetail() {
                     onChange={handleInputChange}
                     placeholder="Дополнительная информация (необязательно)"
                     rows="3"
+                    maxLength={500}
                   />
                 </div>
 
                 <button type="submit" className="btn-submit" disabled={submitting}>
-                  {submitting ? 'Отправка...' : 'Отправить заявку'}
+                  {submitting ? '⏳ Отправка...' : '📤 Отправить заявку'}
                 </button>
 
                 <p className="form-note">
