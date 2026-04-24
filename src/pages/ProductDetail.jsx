@@ -329,7 +329,7 @@ export default function ProductDetail() {
                 </button>
 
                 <p className="form-note">
-                  🔒 Ваши данные защищены. Мы не передаём их третьим лицам.
+                  🔒 Ваши данные защищены. Мы не передаём их третьим лицам
                 </p>
               </form>
             )}
