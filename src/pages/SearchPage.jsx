@@ -5,6 +5,8 @@ import { getProducts } from '../api/api'
 import { useLang } from '../i18n/LanguageContext'
 import './SearchPage.css'
 
+// ✅ Базовый путь к картинкам (настройте под свою структуру!)
+const IMG_BASE_PATH = '/img/'
 
 const ProductCard = ({ product }) => {
   const { ref, inView } = useInView({
@@ -14,6 +16,20 @@ const ProductCard = ({ product }) => {
   })
 
   const productLink = product.path || product.url || `/product/${product.slug || product.id}`
+
+  // ✅ Функция для получения правильного пути к картинке
+  const getImageUrl = (img) => {
+    if (!img) return '/img/placeholder.png'
+    
+    // Если уже полный URL (начинается с http)
+    if (img.startsWith('http')) return img
+    
+    // Если уже содержит путь (начинается с / или img/)
+    if (img.startsWith('/') || img.startsWith('img/')) return `/${img}`
+    
+    // Иначе добавляем базовый путь
+    return `${IMG_BASE_PATH}${img}`
+  }
 
   return (
     <Link
@@ -25,13 +41,18 @@ const ProductCard = ({ product }) => {
     >
       <div className="search-card__media">
         <img
-          src={product.img}
-          srcSet={product.srcSet || product.img}
+          src={getImageUrl(product.img)}
+          srcSet={product.srcSet ? getImageUrl(product.srcSet) : getImageUrl(product.img)}
           sizes="(max-width: 768px) 50vw, 33vw"
           loading="lazy"
           decoding="async"
           alt={`Купить ${product.title?.toLowerCase()} в STEM Academia`}
           className="search-card__img"
+          onError={(e) => {
+            // ✅ Если картинка не загрузилась — показываем заглушку
+            e.target.onerror = null
+            e.target.src = '/img/placeholder.png'
+          }}
         />
         {product.badge && (
           <span className={`badge badge--${product.badge}`}>
@@ -83,7 +104,7 @@ export default function SearchPage() {
       "mainEntity": results.map(p => ({
         "@type": "Product",
         "name": p.title,
-        "image": p.img,
+        "image": getImageUrl(p.img), // ✅ Используем ту же функцию
         "sku": p.article,
         "url": `${window.location.origin}${p.path || p.url || `/product/${p.id}`}`
       }))
