@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { createApplication } from '../../api/api'
 import { useCart } from '../../context/CartContext'
+import { useFavorites } from '../../context/FavoritesContext'  // ✅ Импортируем контекст
 import './Stanki.css'
 
 const products = [
@@ -40,15 +41,11 @@ const products = [
 
 export default function Stanki() {
   const { addToCart } = useCart()
+  const { toggleFavorite, isFavorite } = useFavorites()  // ✅ Используем контекст
   const [showModal, setShowModal] = useState(false)
   const [formData, setFormData] = useState({ name: '', phone: '', comment: '', productName: '' })
   const [submitting, setSubmitting] = useState(false)
   const [submitSuccess, setSubmitSuccess] = useState(false)
-  const [favorites, setFavorites] = useState(() => {
-    // ✅ Загружаем избранное из localStorage
-    const saved = localStorage.getItem('favorites')
-    return saved ? JSON.parse(saved) : []
-  })
 
   const handleOpenModal = (productName) => {
     setShowModal(true)
@@ -63,7 +60,6 @@ export default function Stanki() {
     setFormData(prev => ({ ...prev, [name]: value }))
   }
 
-  // ✅ Функция добавления в корзину
   const handleAddToCart = (product) => {
     addToCart({
       id: product.id,
@@ -73,26 +69,6 @@ export default function Stanki() {
       name: product.title,
     })
   }
-
-  // ✅ Функция добавления/удаления из избранного
-  const toggleFavorite = (product) => {
-    const isFavorite = favorites.includes(product.id)
-    
-    if (isFavorite) {
-      // Удаляем из избранного
-      const newFavorites = favorites.filter(id => id !== product.id)
-      setFavorites(newFavorites)
-      localStorage.setItem('favorites', JSON.stringify(newFavorites))
-    } else {
-      // Добавляем в избранное
-      const newFavorites = [...favorites, product.id]
-      setFavorites(newFavorites)
-      localStorage.setItem('favorites', JSON.stringify(newFavorites))
-    }
-  }
-
-  // ✅ Проверяем, есть ли товар в избранном
-  const isFavorite = (productId) => favorites.includes(productId)
 
   const handleSubmit = async (e) => {
     e.preventDefault()

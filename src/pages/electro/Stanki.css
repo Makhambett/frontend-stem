@@ -52,7 +52,7 @@
   margin-left: 12px;
 }
 
-/* Карточка товара — ГОРИЗОНТАЛЬНАЯ как на Divany */
+/* Карточка товара — ГОРИЗОНТАЛЬНАЯ */
 .product-card {
   background: #fff;
   border-radius: 16px;
@@ -159,11 +159,12 @@
   margin-top: 16px;
 }
 
+.btn-cart,
 .btn-application,
-.btn-cart {
+.btn-favorite {
   flex: 1;
   padding: 14px 24px;
-  border: none;
+  border: 2px solid transparent;
   border-radius: 8px;
   font-size: 15px;
   font-weight: 600;
@@ -198,23 +199,26 @@
 }
 
 .btn-favorite {
-  padding: 14px 24px;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
   background: #fff;
   color: #666;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  border-color: #e0e0e0;
 }
 
 .btn-favorite:hover {
   border-color: #2d6a4f;
   color: #2d6a4f;
+}
+
+/* ✅ Активное состояние избранного */
+.btn-favorite--active {
+  background: #fff3cd !important;
+  border-color: #ffc107 !important;
+  color: #856404 !important;
+}
+
+.btn-favorite--active:hover {
+  background: #ffeeba !important;
+  border-color: #ffc107 !important;
 }
 
 /* Мета-информация */
@@ -421,16 +425,4 @@
   .third-page-container {
     padding: 16px 20px 40px;
   }
-}
-
-/* Стили для активной кнопки избранного */
-.btn-favorite--active {
-  background: #fff3cd !important;
-  border-color: #ffc107 !important;
-  color: #856404 !important;
-}
-
-.btn-favorite--active:hover {
-  background: #ffeeba !important;
-  border-color: #ffc107 !important;
 }
