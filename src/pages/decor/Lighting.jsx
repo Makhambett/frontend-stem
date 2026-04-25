@@ -111,21 +111,21 @@ export default function Lighting() {
               <div className="product-info">
                 <h2 className="product-title">{p.title}</h2>
 
-                <div className="product-specs">
-                  <div className="spec-row">
-                    <span className="spec-label">Размеры:</span>
-                    <span className="spec-value">{p.size}</span>
-                  </div>
+                <div className="product-characteristics">
+                  <h3 className="characteristics-title">Характеристики:</h3>
                   
-                  <div className="spec-row">
-                    <span className="spec-label">Артикул:</span>
-                    <span className="spec-value">{p.article}</span>
-                  </div>
-                </div>
-
-                <div className="product-delivery">
-                  <p>🚚 Доставка по Казахстану</p>
-                  <p>📍 Самовывоз: г. Астана, ул. Домалак-ана 26</p>
+                  <table className="characteristics-table">
+                    <tbody>
+                      <tr>
+                        <td className="char-label">Размеры</td>
+                        <td className="char-value">{p.size}</td>
+                      </tr>
+                      <tr>
+                        <td className="char-label">Артикул</td>
+                        <td className="char-value">{p.article}</td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
 
                 <div className="product-actions">
@@ -137,24 +137,19 @@ export default function Lighting() {
                   </button>
                   
                   <button 
-                    className="btn-application"
-                    onClick={() => handleOpenModal(p.title)}
-                  >
-                    📝 Оставить заявку
-                  </button>
-                  
-                  <button 
-                    className={`btn-favorite ${isFavorite(p.id) ? 'btn-favorite--active' : ''}`}
+                    className="btn-favorite"
                     onClick={() => toggleFavorite(p)}
                   >
                     {isFavorite(p.id) ? '❤️ В избранном' : '🤍 В избранное'}
                   </button>
                 </div>
 
-                <div className="product-meta">
-                  <span>↗ Поделиться</span>
-                  <span>⚖ Сравнить</span>
-                </div>
+                <button 
+                  className="btn-application"
+                  onClick={() => handleOpenModal(p.title)}
+                >
+                  📝 Оставить заявку
+                </button>
               </div>
             </div>
           ))}
