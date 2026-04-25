@@ -37,44 +37,74 @@ const products = [
 ]
 
 export default function Stanki() {
-  const telegramBase = 'https://t.me/stem_academia_bot?text='
+  const [showModal, setShowModal] = useState(false)
+  const [formData, setFormData] = useState({ name: '', phone: '', comment: '' })
+  const [submitting, setSubmitting] = useState(false)
+  const [submitSuccess, setSubmitSuccess] = useState(false)
+
+  const handleOpenModal = (productName) => {
+    setShowModal(true)
+    setSubmitSuccess(false)
+    setFormData({ name: '', phone: '', comment: '', productName })
+  }
+
+  const handleCloseModal = () => setShowModal(false)
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target
+    setFormData(prev => ({ ...prev, [name]: value }))
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setSubmitting(true)
+    
+    try {
+      // Здесь можно добавить отправку на бэкенд
+      // await createApplication(formData)
+      
+      setSubmitSuccess(true)
+      setTimeout(() => setShowModal(false), 2000)
+    } catch (err) {
+      console.error('Ошибка отправки заявки:', err)
+      alert('Произошла ошибка при отправке заявки. Попробуйте снова.')
+    } finally {
+      setSubmitting(false)
+    }
+  }
 
   return (
-    <div className="stanki-page">
+    <>
+      <div className="third-page-container">
+        <nav className="third-page-breadcrumb">
+          <Link to="/">Главная</Link>
+          <span className="separator"> / </span>
+          <Link to="/electro">Электротехника</Link>
+          <span className="separator"> / </span>
+          <span className="current">Станки</span>
+        </nav>
 
-      <div className="stanki-breadcrumb">
-        <Link to="/" className="breadcrumb-link">Главная</Link>
-        <span> / </span>
-        <Link to="/electro" className="breadcrumb-link">Электротехника</Link>
-        <span> / </span>
-        <span>Станки</span>
-      </div>
+        <h1>Станки <span className="product-count">{products.length} товара</span></h1>
 
-      <h1 className="stanki-title">
-        Станки <span>{products.length} товара</span>
-      </h1>
-
-      <div className="stanki-list">
         {products.map((p) => (
-          <div key={p.id} className="divan-card">
-
-            <div className="divan-card__gallery">
-              <img src={p.img} alt={p.title} className="divan-card__main-img" />
+          <div key={p.id} className="product-card">
+            <div className="product-image">
+              <img src={p.img} alt={p.title} />
             </div>
 
-            <div className="divan-card__info">
-              <p className="stanki-tag">{p.tag}</p>
-              <h2 className="divan-card__title">{p.title}</h2>
+            <div className="product-info">
+              <p className="product-tag">{p.tag}</p>
+              <h2 className="product-title">{p.title}</h2>
 
-              <div className="divan-card__section">
-                <span className="divan-card__label">Описание:</span>
+              <div className="product-description">
+                <p>Описание:</p>
                 {p.description.map((d, i) => (
-                  <p key={i} className="divan-card__desc">{d}</p>
+                  <p key={i}>{d}</p>
                 ))}
               </div>
 
-              <div className="divan-card__section">
-                <table className="divan-card__table">
+              <div className="product-article">
+                <table>
                   <tbody>
                     <tr>
                       <td>Артикул</td>
@@ -84,33 +114,102 @@ export default function Stanki() {
                 </table>
               </div>
 
-              <div className="divan-card__delivery">
-                <span>🚚 Доставка по Казахстану</span>
-                <span>📍 Самовывоз: г. Астана, ул. Домалак-ана 26</span>
+              <div className="product-delivery">
+                <p>🚚 Доставка по Казахстану</p>
+                <p>📍 Самовывоз: г. Астана, ул. Домалак-ана 26</p>
               </div>
 
-              <div className="divan-card__actions">
-                <a
-                  href={`${telegramBase}${encodeURIComponent(`Здравствуйте! Интересует: ${p.title}, Артикул: ${p.article}`)}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="btn-order"
+              <div className="product-actions">
+                <button 
+                  className="btn-application"
+                  onClick={() => handleOpenModal(p.title)}
                 >
                   Оставить заявку
-                </a>
-                <button className="btn-favorite">❤ В избранное</button>
+                </button>
+                
+                <button className="btn-favorite">
+                  ❤ В избранное
+                </button>
               </div>
 
-              <div className="divan-card__share">
-                <button>↗ Поделиться</button>
-                <button>⚖ Сравнить</button>
+              <div className="product-meta">
+                <span>↗ Поделиться</span>
+                <span>⚖ Сравнить</span>
               </div>
             </div>
-
           </div>
         ))}
       </div>
 
-    </div>
+      {/* Модальное окно с формой */}
+      {showModal && (
+        <div className="modal-overlay" onClick={handleCloseModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="modal-close" onClick={handleCloseModal}>×</button>
+
+            <h2 className="modal-title">📝 Оставить заявку</h2>
+            <p className="modal-subtitle">
+              Товар: <strong>{formData.productName}</strong>
+            </p>
+
+            {submitSuccess ? (
+              <div className="success-message">
+                <div className="success-icon">✅</div>
+                <h3>Заявка отправлена!</h3>
+                <p>Наш менеджер свяжется с вами в ближайшее время.</p>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="application-form">
+                <div className="form-group">
+                  <label htmlFor="name">Ваше имя *</label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    required
+                    placeholder="Иван Иванов"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="phone">Телефон *</label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    required
+                    placeholder="+7 (___) ___-__-__"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="comment">Комментарий</label>
+                  <textarea
+                    id="comment"
+                    name="comment"
+                    value={formData.comment}
+                    onChange={handleInputChange}
+                    placeholder="Дополнительная информация (необязательно)"
+                    rows="3"
+                  />
+                </div>
+
+                <button type="submit" className="btn-submit" disabled={submitting}>
+                  {submitting ? 'Отправка...' : 'Отправить заявку'}
+                </button>
+
+                <p className="form-note">
+                  🔒 Ваши данные защищены. Мы не передаём их третьим лицам.
+                </p>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
+    </>
   )
 }
