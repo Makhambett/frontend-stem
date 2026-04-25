@@ -89,60 +89,71 @@ export default function Lighting() {
   return (
     <>
       <div className="lighting-page">
-        <div className="lighting-breadcrumb">
-          <Link to="/" className="breadcrumb-link">Главная</Link>
-          <span> / </span>
-          <Link to="/decor" className="breadcrumb-link">Декор</Link>
-          <span> / </span>
-          <span>Освещение</span>
-        </div>
+        <nav className="lighting-breadcrumb">
+          <Link to="/">Главная</Link>
+          <span className="separator"> / </span>
+          <Link to="/decor">Декор</Link>
+          <span className="separator"> / </span>
+          <span className="current">Освещение</span>
+        </nav>
 
         <h1 className="lighting-title">
-          Освещение <span>{products.length} товаров</span>
+          Освещение <span className="product-count">{products.length} товаров</span>
         </h1>
 
-        <div className="lighting-grid">
+        <div className="lighting-list">
           {products.map((p) => (
-            <div key={p.id} className="light-card">
-              <div className="light-card__img-wrap">
-                <img src={p.img} alt={p.title} className="light-card__img" />
+            <div key={p.id} className="product-card">
+              <div className="product-image">
+                <img src={p.img} alt={p.title} />
               </div>
 
-              <div className="light-card__body">
-                <h2 className="light-card__title">{p.title}</h2>
+              <div className="product-info">
+                <h2 className="product-title">{p.title}</h2>
 
-                <div className="light-card__row">
-                  <span className="light-card__label">Размеры:</span>
-                  <span className="light-card__value">{p.size}</span>
+                <div className="product-specs">
+                  <div className="spec-row">
+                    <span className="spec-label">Размеры:</span>
+                    <span className="spec-value">{p.size}</span>
+                  </div>
+                  
+                  <div className="spec-row">
+                    <span className="spec-label">Артикул:</span>
+                    <span className="spec-value">{p.article}</span>
+                  </div>
                 </div>
 
-                <div className="light-card__row">
-                  <span className="light-card__label">Артикул:</span>
-                  <span className="light-card__value">{p.article}</span>
+                <div className="product-delivery">
+                  <p>🚚 Доставка по Казахстану</p>
+                  <p>📍 Самовывоз: г. Астана, ул. Домалак-ана 26</p>
                 </div>
 
-                <div className="light-card__actions">
+                <div className="product-actions">
                   <button 
-                    className="light-card__btn"
+                    className="btn-cart"
                     onClick={() => handleAddToCart(p)}
                   >
                     🛒 В корзину
                   </button>
                   
                   <button 
-                    className="light-card__btn light-card__btn--secondary"
+                    className="btn-application"
                     onClick={() => handleOpenModal(p.title)}
                   >
-                    📝 Заявка
+                    📝 Оставить заявку
                   </button>
                   
                   <button 
-                    className={`light-card__btn-icon ${isFavorite(p.id) ? 'light-card__btn-icon--active' : ''}`}
+                    className={`btn-favorite ${isFavorite(p.id) ? 'btn-favorite--active' : ''}`}
                     onClick={() => toggleFavorite(p)}
-                    title={isFavorite(p.id) ? 'Удалить из избранного' : 'В избранное'}
                   >
-                    {isFavorite(p.id) ? '❤️' : '🤍'}
+                    {isFavorite(p.id) ? '❤️ В избранном' : '🤍 В избранное'}
                   </button>
+                </div>
+
+                <div className="product-meta">
+                  <span>↗ Поделиться</span>
+                  <span>⚖ Сравнить</span>
                 </div>
               </div>
             </div>
