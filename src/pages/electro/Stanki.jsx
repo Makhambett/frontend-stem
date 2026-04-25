@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { createApplication } from '../api/api'  // ✅ Импортируем функцию API
+import { createApplication } from '../../api/api'  // ✅ ИСПРАВЛЕНО: ../../ вместо ../
 import './Stanki.css'
 
 const products = [
@@ -61,13 +61,12 @@ export default function Stanki() {
     setSubmitting(true)
     
     try {
-      // ✅ ОТПРАВКА НА РЕАЛЬНЫЙ БЭКЕНД
       const applicationData = {
         name: formData.name,
         phone: formData.phone,
         comment: formData.comment,
         product_name: formData.productName,
-        article: '',  // Можно добавить в products, если нужно
+        article: '',
         product_url: window.location.href
       }
       
@@ -156,7 +155,6 @@ export default function Stanki() {
         ))}
       </div>
 
-      {/* Модальное окно с формой */}
       {showModal && (
         <div className="modal-overlay" onClick={handleCloseModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
