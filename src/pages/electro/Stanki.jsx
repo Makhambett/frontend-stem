@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { createApplication } from '../../api/api'  // ✅ ИСПРАВЛЕНО: ../../ вместо ../
+import { createApplication } from '../../api/api'
+import { useCart } from '../../context/CartContext'  // ✅ Добавляем хук корзины
 import './Stanki.css'
 
 const products = [
@@ -13,6 +14,7 @@ const products = [
       'Unimat — это многофункциональный учебно-лабораторный станок, предназначенный для изучения основ обработки материалов, инженерии и технологий. Станок позволяет учащимся и студентам выполнять практические задания, развивать навыки работы с металлом и пластиком, а также создавать учебные проекты в безопасной учебной среде.',
     ],
     article: 'S.Me-ST.S.DP',
+    price: 125000,  // ✅ Добавляем цену
   },
   {
     id: 2,
@@ -23,6 +25,7 @@ const products = [
       'Unimat по дереву — это многофункциональный учебно-лабораторный станок, предназначенный для изучения основ обработки древесины, инженерии и технологий. Станок позволяет учащимся и студентам выполнять практические задания, развивать навыки работы с древесными материалами.',
     ],
     article: 'S.Me-ST.S.DP',
+    price: 98000,  // ✅ Добавляем цену
   },
   {
     id: 3,
@@ -34,10 +37,12 @@ const products = [
       'Оснащён безопасными механизмами и позволяет изучать точность обработки, сборку прототипов и конструирование изделий.',
     ],
     article: 'S.Me-ST.S.DP',
+    price: 156000,  // ✅ Добавляем цену
   },
 ]
 
 export default function Stanki() {
+  const { addToCart } = useCart()  // ✅ Получаем функцию добавления в корзину
   const [showModal, setShowModal] = useState(false)
   const [formData, setFormData] = useState({ name: '', phone: '', comment: '', productName: '' })
   const [submitting, setSubmitting] = useState(false)
@@ -54,6 +59,18 @@ export default function Stanki() {
   const handleInputChange = (e) => {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
+  }
+
+  // ✅ Функция добавления в корзину
+  const handleAddToCart = (product) => {
+    addToCart({
+      id: product.id,
+      title: product.title,
+      price: product.price,
+      article: product.article,
+      img: product.img,
+      name: product.title,  // Для совместимости с корзиной
+    })
   }
 
   const handleSubmit = async (e) => {
@@ -124,6 +141,10 @@ export default function Stanki() {
                       <td>Артикул</td>
                       <td>{p.article}</td>
                     </tr>
+                    <tr>
+                      <td>Цена</td>
+                      <td>{p.price.toLocaleString('ru-KZ')} ₸</td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -135,10 +156,17 @@ export default function Stanki() {
 
               <div className="product-actions">
                 <button 
+                  className="btn-cart"
+                  onClick={() => handleAddToCart(p)}
+                >
+                  🛒 В корзину
+                </button>
+                
+                <button 
                   className="btn-application"
                   onClick={() => handleOpenModal(p.title)}
                 >
-                  Оставить заявку
+                  📝 Оставить заявку
                 </button>
                 
                 <button className="btn-favorite">

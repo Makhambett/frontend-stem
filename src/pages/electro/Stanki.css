@@ -1,133 +1,424 @@
-.stanki-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  padding: 16px 32px;
-  height: calc(100vh - 100px);
-  overflow: hidden;
+/* Контейнер страницы */
+.third-page-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px 40px 60px;
+  background: #f8f9fa;
+  min-height: 100vh;
 }
 
-.stanki-card {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  overflow: hidden;
+/* Хлебные крошки */
+.third-page-breadcrumb {
   display: flex;
-  flex-direction: column;
-  height: 100%;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 24px;
+  font-size: 14px;
+  color: #666;
 }
 
-.stanki-card__header {
-  padding: 16px 16px 8px;
-  flex-shrink: 0;
+.third-page-breadcrumb a {
+  color: #2d6a4f;
+  text-decoration: none;
+  transition: color 0.2s;
 }
 
-.stanki-card__tag {
-  font-size: 0.65rem;
+.third-page-breadcrumb a:hover {
+  color: #1b4332;
+  text-decoration: underline;
+}
+
+.third-page-breadcrumb .separator {
   color: #999;
-  margin-bottom: 4px;
 }
 
-.stanki-card__title {
-  font-family: 'Unbounded', sans-serif;
-  font-weight: 900;
-  font-size: 1rem;
-  color: #111;
-  line-height: 1.2;
+.third-page-breadcrumb .current {
+  color: #333;
 }
-.stanki-card__img-wrap {
-  height: 260px;
-  flex-shrink: 0;
+
+/* Заголовок */
+.third-page-container h1 {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 8px;
+}
+
+.product-count {
+  font-size: 16px;
+  color: #888;
+  font-weight: 400;
+  margin-left: 12px;
+}
+
+/* Карточка товара — ГОРИЗОНТАЛЬНАЯ как на Divany */
+.product-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 32px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 40px;
+  align-items: start;
+}
+
+/* Изображение */
+.product-image {
+  background: #f5f5f3;
+  border-radius: 12px;
+  padding: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f5f5f3;
-  padding: 12px;
+  min-height: 280px;
 }
 
-.stanki-card__img {
-  width: 100%;
-  height: 100%;
+.product-image img {
+  max-width: 100%;
+  max-height: 320px;
   object-fit: contain;
 }
 
-.stanki-card__body {
-  padding: 12px 16px 0;
-  flex-shrink: 0;
+/* Информация о товаре */
+.product-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.product-tag {
+  font-size: 13px;
+  color: #2d6a4f;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.product-title {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.product-description {
+  font-size: 14px;
+  line-height: 1.7;
+  color: #555;
+}
+
+.product-description p {
+  margin: 0 0 8px;
+}
+
+/* Таблица характеристик */
+.product-article table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+}
+
+.product-article td {
+  padding: 8px 0;
+  font-size: 14px;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.product-article td:first-child {
+  width: 150px;
+  color: #888;
+  font-weight: 500;
+}
+
+.product-article td:last-child {
+  color: #333;
+}
+
+/* Доставка */
+.product-delivery {
+  background: #f0fdf4;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-top: 8px;
+}
+
+.product-delivery p {
+  margin: 4px 0;
+  font-size: 14px;
+  color: #333;
+}
+
+/* Кнопки */
+.product-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.btn-application,
+.btn-cart {
+  flex: 1;
+  padding: 14px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-cart {
+  background: #2d6a4f;
+  color: #fff;
+}
+
+.btn-cart:hover {
+  background: #1b4332;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(45, 106, 79, 0.3);
+}
+
+.btn-application {
+  background: #2d6a4f;
+  color: #fff;
+}
+
+.btn-application:hover {
+  background: #1b4332;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(45, 106, 79, 0.3);
+}
+
+.btn-favorite {
+  padding: 14px 24px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  background: #fff;
+  color: #666;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-favorite:hover {
+  border-color: #2d6a4f;
+  color: #2d6a4f;
+}
+
+/* Мета-информация */
+.product-meta {
+  display: flex;
+  gap: 24px;
+  margin-top: 12px;
+  font-size: 13px;
+  color: #666;
+}
+
+.product-meta span {
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.product-meta span:hover {
+  color: #2d6a4f;
+}
+
+/* Модальное окно */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease;
+}
+
+.modal-content {
+  background: #fff;
+  border-radius: 16px;
+  padding: 32px;
+  max-width: 480px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  animation: slideUp 0.3s ease;
+}
+
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: #f5f5f5;
+  border-radius: 50%;
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.modal-close:hover {
+  background: #e0e0e0;
+}
+
+.modal-title {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 8px;
+}
+
+.modal-subtitle {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 24px;
+}
+
+.modal-subtitle strong {
+  color: #2d6a4f;
+}
+
+/* Форма */
+.application-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-group {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.stanki-card__desc-label {
-  font-weight: 700;
-  font-size: 0.82rem;
-  color: #111;
+.form-group label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
 }
 
-.stanki-card__desc {
-  font-size: 0.72rem;
-  color: #555;
-  line-height: 1.55;
+.form-group input,
+.form-group textarea {
+  padding: 12px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: all 0.2s;
+  font-family: inherit;
 }
 
-.stanki-card__footer {
-  padding: 8px 16px 14px;
-  flex-shrink: 0;
-  margin-top: auto;
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #2d6a4f;
+  box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.1);
 }
 
-.stanki-card__divider {
-  border-top: 1px solid #e0e0e0;
-  margin-bottom: 8px;
+.btn-submit {
+  padding: 14px 24px;
+  background: #2d6a4f;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
-.stanki-card__article {
-  font-size: 0.7rem;
-  color: #999;
+.btn-submit:hover:not(:disabled) {
+  background: #1b4332;
+  transform: translateY(-1px);
 }
 
-.stanki-page {
-  padding: 0 40px 60px;
-  background: #f5f5f5;
-  min-height: 100vh;
+.btn-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
-.stanki-breadcrumb {
-  padding: 14px 0;
+.form-note {
   font-size: 13px;
   color: #888;
+  text-align: center;
+  margin-top: 8px;
 }
 
-.stanki-title {
-  font-size: 22px;
-  font-weight: 700;
-  color: #1a1a1a;
-  margin: 0 0 24px;
+/* Сообщение об успехе */
+.success-message {
+  text-align: center;
+  padding: 24px;
 }
 
-.stanki-title span {
-  font-size: 14px;
-  color: #888;
-  font-weight: 400;
-  margin-left: 10px;
+.success-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
 }
 
-.stanki-list {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.stanki-tag {
-  font-size: 12px;
+.success-message h3 {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 20px;
   color: #2d6a4f;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin: 0 0 6px;
+  margin: 0 0 8px;
 }
 
-@media (max-width: 768px) {
-  .stanki-page { padding: 0 16px 40px; }
+.success-message p {
+  color: #666;
+  margin: 0;
+}
+
+/* Анимации */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Адаптивность */
+@media (max-width: 968px) {
+  .product-card {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  
+  .product-image {
+    min-height: 240px;
+  }
+  
+  .product-actions {
+    flex-direction: column;
+  }
+  
+  .third-page-container {
+    padding: 16px 20px 40px;
+  }
 }
