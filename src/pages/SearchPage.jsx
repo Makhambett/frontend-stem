@@ -5,8 +5,22 @@ import { getProducts } from '../api/api'
 import { useLang } from '../i18n/LanguageContext'
 import './SearchPage.css'
 
-// ✅ Базовый путь к картинкам (настройте под свою структуру!)
-const IMG_BASE_PATH = '/img/'
+// ✅ Исправленная функция — убран двойной слеш
+const getImageUrl = (img) => {
+  if (!img) return '/img/placeholder.png'
+
+  // Уже полный URL
+  if (img.startsWith('http')) return img
+
+  // Уже абсолютный путь типа /img/... — возвращаем как есть
+  if (img.startsWith('/')) return img
+
+  // Относительный путь типа img/... — добавляем один слеш
+  if (img.startsWith('img/')) return `/${img}`
+
+  // Просто имя файла — добавляем базовый путь
+  return `/img/${img}`
+}
 
 const ProductCard = ({ product }) => {
   const { ref, inView } = useInView({
@@ -16,20 +30,6 @@ const ProductCard = ({ product }) => {
   })
 
   const productLink = product.path || product.url || `/product/${product.slug || product.id}`
-
-  // ✅ Функция для получения правильного пути к картинке
-  const getImageUrl = (img) => {
-    if (!img) return '/img/placeholder.png'
-    
-    // Если уже полный URL (начинается с http)
-    if (img.startsWith('http')) return img
-    
-    // Если уже содержит путь (начинается с / или img/)
-    if (img.startsWith('/') || img.startsWith('img/')) return `/${img}`
-    
-    // Иначе добавляем базовый путь
-    return `${IMG_BASE_PATH}${img}`
-  }
 
   return (
     <Link
@@ -42,14 +42,12 @@ const ProductCard = ({ product }) => {
       <div className="search-card__media">
         <img
           src={getImageUrl(product.img)}
-          srcSet={product.srcSet ? getImageUrl(product.srcSet) : getImageUrl(product.img)}
           sizes="(max-width: 768px) 50vw, 33vw"
           loading="lazy"
           decoding="async"
           alt={`Купить ${product.title?.toLowerCase()} в STEM Academia`}
           className="search-card__img"
           onError={(e) => {
-            // ✅ Если картинка не загрузилась — показываем заглушку
             e.target.onerror = null
             e.target.src = '/img/placeholder.png'
           }}
@@ -64,12 +62,13 @@ const ProductCard = ({ product }) => {
       <div className="search-card__info">
         <h3 className="search-card__title">{product.title}</h3>
         <p className="search-card__article">Арт: {product.article}</p>
-        {product.description && <p className="search-card__desc">{product.description}</p>}
+        {product.description && (
+          <p className="search-card__desc">{product.description}</p>
+        )}
       </div>
     </Link>
   )
 }
-
 
 export default function SearchPage() {
   const [searchParams] = useSearchParams()
@@ -90,6 +89,8 @@ export default function SearchPage() {
           console.error('Ошибка поиска:', err)
           setLoading(false)
         })
+    } else {
+      setLoading(false)
     }
   }, [query])
 
@@ -104,7 +105,7 @@ export default function SearchPage() {
       "mainEntity": results.map(p => ({
         "@type": "Product",
         "name": p.title,
-        "image": getImageUrl(p.img), // ✅ Используем ту же функцию
+        "image": getImageUrl(p.img),
         "sku": p.article,
         "url": `${window.location.origin}${p.path || p.url || `/product/${p.id}`}`
       }))
@@ -144,7 +145,8 @@ export default function SearchPage() {
       ) : (
         <>
           <p className="search-count">
-            Найдено: <strong>{results.length}</strong> {results.length === 1 ? 'товар' : 'товаров'}
+            🔍 Найдено: <strong>{results.length}</strong>{' '}
+            {results.length === 1 ? 'товар' : 'товаров'}
           </p>
 
           <div className="search-grid" role="list">
