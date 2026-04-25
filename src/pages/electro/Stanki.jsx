@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { createApplication } from '../../api/api'
-import { useCart } from '../../context/CartContext'  // ✅ Добавляем хук корзины
+import { useCart } from '../../context/CartContext'
 import './Stanki.css'
 
 const products = [
@@ -14,7 +14,6 @@ const products = [
       'Unimat — это многофункциональный учебно-лабораторный станок, предназначенный для изучения основ обработки материалов, инженерии и технологий. Станок позволяет учащимся и студентам выполнять практические задания, развивать навыки работы с металлом и пластиком, а также создавать учебные проекты в безопасной учебной среде.',
     ],
     article: 'S.Me-ST.S.DP',
-    price: 125000,  // ✅ Добавляем цену
   },
   {
     id: 2,
@@ -25,7 +24,6 @@ const products = [
       'Unimat по дереву — это многофункциональный учебно-лабораторный станок, предназначенный для изучения основ обработки древесины, инженерии и технологий. Станок позволяет учащимся и студентам выполнять практические задания, развивать навыки работы с древесными материалами.',
     ],
     article: 'S.Me-ST.S.DP',
-    price: 98000,  // ✅ Добавляем цену
   },
   {
     id: 3,
@@ -37,16 +35,20 @@ const products = [
       'Оснащён безопасными механизмами и позволяет изучать точность обработки, сборку прототипов и конструирование изделий.',
     ],
     article: 'S.Me-ST.S.DP',
-    price: 156000,  // ✅ Добавляем цену
   },
 ]
 
 export default function Stanki() {
-  const { addToCart } = useCart()  // ✅ Получаем функцию добавления в корзину
+  const { addToCart } = useCart()
   const [showModal, setShowModal] = useState(false)
   const [formData, setFormData] = useState({ name: '', phone: '', comment: '', productName: '' })
   const [submitting, setSubmitting] = useState(false)
   const [submitSuccess, setSubmitSuccess] = useState(false)
+  const [favorites, setFavorites] = useState(() => {
+    // ✅ Загружаем избранное из localStorage
+    const saved = localStorage.getItem('favorites')
+    return saved ? JSON.parse(saved) : []
+  })
 
   const handleOpenModal = (productName) => {
     setShowModal(true)
@@ -66,12 +68,31 @@ export default function Stanki() {
     addToCart({
       id: product.id,
       title: product.title,
-      price: product.price,
       article: product.article,
       img: product.img,
-      name: product.title,  // Для совместимости с корзиной
+      name: product.title,
     })
   }
+
+  // ✅ Функция добавления/удаления из избранного
+  const toggleFavorite = (product) => {
+    const isFavorite = favorites.includes(product.id)
+    
+    if (isFavorite) {
+      // Удаляем из избранного
+      const newFavorites = favorites.filter(id => id !== product.id)
+      setFavorites(newFavorites)
+      localStorage.setItem('favorites', JSON.stringify(newFavorites))
+    } else {
+      // Добавляем в избранное
+      const newFavorites = [...favorites, product.id]
+      setFavorites(newFavorites)
+      localStorage.setItem('favorites', JSON.stringify(newFavorites))
+    }
+  }
+
+  // ✅ Проверяем, есть ли товар в избранном
+  const isFavorite = (productId) => favorites.includes(productId)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -141,10 +162,6 @@ export default function Stanki() {
                       <td>Артикул</td>
                       <td>{p.article}</td>
                     </tr>
-                    <tr>
-                      <td>Цена</td>
-                      <td>{p.price.toLocaleString('ru-KZ')} ₸</td>
-                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -169,8 +186,11 @@ export default function Stanki() {
                   📝 Оставить заявку
                 </button>
                 
-                <button className="btn-favorite">
-                  ❤ В избранное
+                <button 
+                  className={`btn-favorite ${isFavorite(p.id) ? 'btn-favorite--active' : ''}`}
+                  onClick={() => toggleFavorite(p)}
+                >
+                  {isFavorite(p.id) ? '❤️ В избранном' : '🤍 В избранное'}
                 </button>
               </div>
 

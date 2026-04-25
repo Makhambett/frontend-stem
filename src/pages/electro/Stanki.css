@@ -422,3 +422,15 @@
     padding: 16px 20px 40px;
   }
 }
+
+/* Стили для активной кнопки избранного */
+.btn-favorite--active {
+  background: #fff3cd !important;
+  border-color: #ffc107 !important;
+  color: #856404 !important;
+}
+
+.btn-favorite--active:hover {
+  background: #ffeeba !important;
+  border-color: #ffc107 !important;
+}
