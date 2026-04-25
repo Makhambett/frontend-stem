@@ -5,9 +5,10 @@ import './Footer.css'
 export default function Footer() {
   const { t } = useLang()
 
-  // Ссылки для удобства управления (можно взять из FloatingButtons)
+  // Ссылки для удобства управления
   const phoneNumber = '77000395877'
   const whatsappLink = `https://wa.me/${phoneNumber}`
+  const telegramLink = 'https://t.me/sulllelilukfjfjf'  // ✅ Исправлено: чат вместо бота
 
   return (
     <footer className="footer">
@@ -63,7 +64,7 @@ export default function Footer() {
             
             {/* Telegram */}
             <a
-              href="https://t.me/stem_academia_bot"
+              href={telegramLink}
               target="_blank"
               rel="noreferrer"
               title="Telegram"
@@ -74,7 +75,7 @@ export default function Footer() {
               </svg>
             </a>
           </div>
-        </div> {/* <--- ВОТ ЭТОТ ТЕГ БЫЛ ПРОПУЩЕН */}
+        </div>
 
         {/* КОЛОНКА 2 — Каталог */}
         <div className="footer-col">
