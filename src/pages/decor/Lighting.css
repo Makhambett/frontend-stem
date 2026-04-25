@@ -1,174 +1,262 @@
-.lighting-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  padding: 30px 40px;
-}
-
-.light-card {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  padding: 16px;
+/* Действия в карточке */
+.light-card__actions {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  gap: 8px;
+  margin-top: 12px;
 }
 
-.light-card__img {
-  width: 100%;
-  height: 200px;
-  object-fit: contain;
+.light-card__btn {
+  flex: 1;
+  padding: 10px 12px;
+  background: #2d6a4f;
+  color: #fff;
+  border: none;
   border-radius: 8px;
-}
-
-.light-card__title {
-  font-size: 15px;
-  font-weight: 800;
-  color: #111;
-  margin: 0;
-  text-transform: uppercase;
-  line-height: 1.3;
-}
-
-.light-card__size-row {
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
   display: flex;
   align-items: center;
-  gap: 8px;
-  border-top: 1px solid #e0e0e0;
-  padding-top: 8px;
+  justify-content: center;
+  gap: 4px;
 }
 
-.light-card__label {
-  font-size: 13px;
-  font-weight: 700;
-  color: #111;
+.light-card__btn:hover {
+  background: #1b4332;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(45, 106, 79, 0.3);
 }
 
-.light-card__value {
-  font-size: 13px;
-  color: #333;
-}
-
-.light-card__article {
-  font-size: 11px;
-  color: #aaa;
-  margin: 0;
-  border-top: 1px solid #f0f0f0;
-  padding-top: 6px;
-}
-
-.lighting-page {
-  padding: 0 40px 60px;
-  background: #f5f5f5;
-  min-height: 100vh;
-}
-
-.lighting-breadcrumb {
-  padding: 14px 0;
-  font-size: 13px;
-  color: #888;
-}
-
-.lighting-title {
-  font-size: 22px;
-  font-weight: 700;
-  color: #1a1a1a;
-  margin: 0 0 24px;
-}
-
-.lighting-title span {
-  font-size: 14px;
-  color: #888;
-  font-weight: 400;
-  margin-left: 10px;
-}
-
-.lighting-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-}
-
-.light-card {
+.light-card__btn--secondary {
   background: #fff;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.2s, box-shadow 0.2s;
+  color: #2d6a4f;
+  border: 2px solid #2d6a4f;
 }
 
-.light-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+.light-card__btn--secondary:hover {
+  background: #f0fdf4;
 }
 
-.light-card__img-wrap {
-  width: 100%;
-  height: 180px;
-  background: #f9f9f9;
+.light-card__btn-icon {
+  width: 40px;
+  padding: 10px;
+  background: #f5f5f5;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.light-card__img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  padding: 12px;
+.light-card__btn-icon:hover {
+  border-color: #ffc107;
+  background: #fff3cd;
 }
 
-.light-card__body {
-  padding: 14px;
+.light-card__btn-icon--active {
+  background: #fff3cd;
+  border-color: #ffc107;
+}
+
+/* Модальное окно */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.6);
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-  flex: 1;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease;
 }
 
-.light-card__title {
-  font-size: 13px;
+.modal-content {
+  background: #fff;
+  border-radius: 16px;
+  padding: 32px;
+  max-width: 480px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  animation: slideUp 0.3s ease;
+}
+
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: #f5f5f5;
+  border-radius: 50%;
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.modal-close:hover {
+  background: #e0e0e0;
+}
+
+.modal-title {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 22px;
   font-weight: 700;
   color: #1a1a1a;
-  margin: 0;
-  line-height: 1.3;
+  margin: 0 0 8px;
 }
 
-.light-card__row {
+.modal-subtitle {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 24px;
+}
+
+.modal-subtitle strong {
+  color: #2d6a4f;
+}
+
+/* Форма */
+.application-form {
   display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
   gap: 6px;
-  font-size: 12px;
 }
 
-.light-card__label {
-  color: #888;
+.form-group label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
 }
 
-.light-card__value {
-  color: #444;
-  font-weight: 500;
+.form-group input,
+.form-group textarea {
+  padding: 12px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: all 0.2s;
+  font-family: inherit;
 }
 
-.light-card__btn {
-  margin-top: auto;
-  display: block;
-  padding: 10px;
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #2d6a4f;
+  box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.1);
+}
+
+.btn-submit {
+  padding: 14px 24px;
   background: #2d6a4f;
   color: #fff;
+  border: none;
   border-radius: 8px;
-  text-decoration: none;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 600;
-  text-align: center;
-  transition: background 0.2s;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
-.light-card__btn:hover { background: #1e4d39; }
+.btn-submit:hover:not(:disabled) {
+  background: #1b4332;
+  transform: translateY(-1px);
+}
+
+.btn-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.form-note {
+  font-size: 13px;
+  color: #888;
+  text-align: center;
+  margin-top: 8px;
+}
+
+/* Сообщение об успехе */
+.success-message {
+  text-align: center;
+  padding: 24px;
+}
+
+.success-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+}
+
+.success-message h3 {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 20px;
+  color: #2d6a4f;
+  margin: 0 0 8px;
+}
+
+.success-message p {
+  color: #666;
+  margin: 0;
+}
+
+/* Анимации */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Адаптивность */
+@media (max-width: 1024px) {
+  .lighting-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
 
 @media (max-width: 768px) {
-  .lighting-page { padding: 0 16px 40px; }
-  .lighting-grid { grid-template-columns: repeat(2, 1fr); }
+  .lighting-page { 
+    padding: 0 16px 40px; 
+  }
+  
+  .lighting-grid { 
+    grid-template-columns: repeat(2, 1fr); 
+  }
+  
+  .light-card__actions {
+    flex-direction: column;
+  }
+  
+  .light-card__btn-icon {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .lighting-grid { 
+    grid-template-columns: 1fr; 
+  }
 }

@@ -1,4 +1,8 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { createApplication } from '../../api/api'
+import { useCart } from '../../context/CartContext'
+import { useFavorites } from '../../context/FavoritesContext'
 import './Lighting.css'
 
 const products = [
@@ -20,59 +24,200 @@ const products = [
   { id: 16, title: 'START',                           img: '/img/pagedecor/lighting/start3.png',          size: '700х200х170',  article: 'S.Me-ST.S.DP' },
 ]
 
-const telegramBase = 'https://t.me/stem_academia_bot?text='
-
 export default function Lighting() {
+  const { addToCart } = useCart()
+  const { toggleFavorite, isFavorite } = useFavorites()
+  const [showModal, setShowModal] = useState(false)
+  const [formData, setFormData] = useState({ name: '', phone: '', comment: '', productName: '' })
+  const [submitting, setSubmitting] = useState(false)
+  const [submitSuccess, setSubmitSuccess] = useState(false)
+
+  const handleOpenModal = (productName) => {
+    setShowModal(true)
+    setSubmitSuccess(false)
+    setFormData({ name: '', phone: '', comment: '', productName })
+  }
+
+  const handleCloseModal = () => setShowModal(false)
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target
+    setFormData(prev => ({ ...prev, [name]: value }))
+  }
+
+  const handleAddToCart = (product) => {
+    addToCart({
+      id: product.id,
+      title: product.title,
+      article: product.article,
+      img: product.img,
+      name: product.title,
+    })
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setSubmitting(true)
+    
+    try {
+      const applicationData = {
+        name: formData.name,
+        phone: formData.phone,
+        comment: formData.comment,
+        product_name: formData.productName,
+        article: '',
+        product_url: window.location.href
+      }
+      
+      await createApplication(applicationData)
+      setSubmitSuccess(true)
+      setTimeout(() => setShowModal(false), 2000)
+    } catch (err) {
+      console.error('Ошибка отправки заявки:', err)
+      if (err.response?.status === 400) {
+        alert('❌ Проверьте правильность заполнения формы')
+      } else if (err.response?.status === 500) {
+        alert('⚠️ Сервер временно недоступен. Попробуйте позже')
+      } else {
+        alert('❌ Не удалось отправить заявку. Проверьте соединение')
+      }
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
   return (
-    <div className="lighting-page">
+    <>
+      <div className="lighting-page">
+        <div className="lighting-breadcrumb">
+          <Link to="/" className="breadcrumb-link">Главная</Link>
+          <span> / </span>
+          <Link to="/decor" className="breadcrumb-link">Декор</Link>
+          <span> / </span>
+          <span>Освещение</span>
+        </div>
 
-      <div className="lighting-breadcrumb">
-        <Link to="/" className="breadcrumb-link">Главная</Link>
-        <span> / </span>
-        <Link to="/decor" className="breadcrumb-link">Декор</Link>
-        <span> / </span>
-        <span>Освещение</span>
+        <h1 className="lighting-title">
+          Освещение <span>{products.length} товаров</span>
+        </h1>
+
+        <div className="lighting-grid">
+          {products.map((p) => (
+            <div key={p.id} className="light-card">
+              <div className="light-card__img-wrap">
+                <img src={p.img} alt={p.title} className="light-card__img" />
+              </div>
+
+              <div className="light-card__body">
+                <h2 className="light-card__title">{p.title}</h2>
+
+                <div className="light-card__row">
+                  <span className="light-card__label">Размеры:</span>
+                  <span className="light-card__value">{p.size}</span>
+                </div>
+
+                <div className="light-card__row">
+                  <span className="light-card__label">Артикул:</span>
+                  <span className="light-card__value">{p.article}</span>
+                </div>
+
+                <div className="light-card__actions">
+                  <button 
+                    className="light-card__btn"
+                    onClick={() => handleAddToCart(p)}
+                  >
+                    🛒 В корзину
+                  </button>
+                  
+                  <button 
+                    className="light-card__btn light-card__btn--secondary"
+                    onClick={() => handleOpenModal(p.title)}
+                  >
+                    📝 Заявка
+                  </button>
+                  
+                  <button 
+                    className={`light-card__btn-icon ${isFavorite(p.id) ? 'light-card__btn-icon--active' : ''}`}
+                    onClick={() => toggleFavorite(p)}
+                    title={isFavorite(p.id) ? 'Удалить из избранного' : 'В избранное'}
+                  >
+                    {isFavorite(p.id) ? '❤️' : '🤍'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
-      <h1 className="lighting-title">
-        Освещение <span>{products.length} товаров</span>
-      </h1>
+      {showModal && (
+        <div className="modal-overlay" onClick={handleCloseModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="modal-close" onClick={handleCloseModal}>×</button>
 
-      <div className="lighting-grid">
-        {products.map((p) => (
-          <div key={p.id} className="light-card">
+            <h2 className="modal-title">📝 Оставить заявку</h2>
+            <p className="modal-subtitle">
+              Товар: <strong>{formData.productName}</strong>
+            </p>
 
-            <div className="light-card__img-wrap">
-              <img src={p.img} alt={p.title} className="light-card__img" />
-            </div>
-
-            <div className="light-card__body">
-              <h2 className="light-card__title">{p.title}</h2>
-
-              <div className="light-card__row">
-                <span className="light-card__label">Размеры:</span>
-                <span className="light-card__value">{p.size}</span>
+            {submitSuccess ? (
+              <div className="success-message">
+                <div className="success-icon">✅</div>
+                <h3>Заявка отправлена!</h3>
+                <p>Наш менеджер свяжется с вами в ближайшее время.</p>
               </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="application-form">
+                <div className="form-group">
+                  <label htmlFor="name">Ваше имя *</label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    required
+                    placeholder="Иван Иванов"
+                  />
+                </div>
 
-              <div className="light-card__row">
-                <span className="light-card__label">Артикул:</span>
-                <span className="light-card__value">{p.article}</span>
-              </div>
+                <div className="form-group">
+                  <label htmlFor="phone">Телефон *</label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    required
+                    placeholder="+7 (___) ___-__-__"
+                  />
+                </div>
 
-              <a
-                href={`${telegramBase}${encodeURIComponent(`Здравствуйте! Интересует: ${p.title}, Артикул: ${p.article}`)}`}
-                target="_blank"
-                rel="noreferrer"
-                className="light-card__btn"
-              >
-                Оставить заявку
-              </a>
-            </div>
+                <div className="form-group">
+                  <label htmlFor="comment">Комментарий</label>
+                  <textarea
+                    id="comment"
+                    name="comment"
+                    value={formData.comment}
+                    onChange={handleInputChange}
+                    placeholder="Дополнительная информация (необязательно)"
+                    rows="3"
+                  />
+                </div>
 
+                <button type="submit" className="btn-submit" disabled={submitting}>
+                  {submitting ? '⏳ Отправка...' : '📤 Отправить заявку'}
+                </button>
+
+                <p className="form-note">
+                  🔒 Ваши данные защищены. Мы не передаём их третьим лицам.
+                </p>
+              </form>
+            )}
           </div>
-        ))}
-      </div>
-
-    </div>
+        </div>
+      )}
+    </>
   )
 }
