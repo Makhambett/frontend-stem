@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { createApplication } from '../api/api'  // ✅ Импортируем функцию API
 import './Stanki.css'
 
 const products = [
@@ -38,7 +39,7 @@ const products = [
 
 export default function Stanki() {
   const [showModal, setShowModal] = useState(false)
-  const [formData, setFormData] = useState({ name: '', phone: '', comment: '' })
+  const [formData, setFormData] = useState({ name: '', phone: '', comment: '', productName: '' })
   const [submitting, setSubmitting] = useState(false)
   const [submitSuccess, setSubmitSuccess] = useState(false)
 
@@ -60,14 +61,28 @@ export default function Stanki() {
     setSubmitting(true)
     
     try {
-      // Здесь можно добавить отправку на бэкенд
-      // await createApplication(formData)
+      // ✅ ОТПРАВКА НА РЕАЛЬНЫЙ БЭКЕНД
+      const applicationData = {
+        name: formData.name,
+        phone: formData.phone,
+        comment: formData.comment,
+        product_name: formData.productName,
+        article: '',  // Можно добавить в products, если нужно
+        product_url: window.location.href
+      }
       
+      await createApplication(applicationData)
       setSubmitSuccess(true)
       setTimeout(() => setShowModal(false), 2000)
     } catch (err) {
       console.error('Ошибка отправки заявки:', err)
-      alert('Произошла ошибка при отправке заявки. Попробуйте снова.')
+      if (err.response?.status === 400) {
+        alert('❌ Проверьте правильность заполнения формы')
+      } else if (err.response?.status === 500) {
+        alert('⚠️ Сервер временно недоступен. Попробуйте позже')
+      } else {
+        alert('❌ Не удалось отправить заявку. Проверьте соединение')
+      }
     } finally {
       setSubmitting(false)
     }
@@ -199,7 +214,7 @@ export default function Stanki() {
                 </div>
 
                 <button type="submit" className="btn-submit" disabled={submitting}>
-                  {submitting ? 'Отправка...' : 'Отправить заявку'}
+                  {submitting ? '⏳ Отправка...' : '📤 Отправить заявку'}
                 </button>
 
                 <p className="form-note">
