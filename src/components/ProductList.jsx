@@ -3,13 +3,13 @@ import { Link } from 'react-router-dom'
 import { useLang } from '../i18n/LanguageContext'
 import { useFavorites } from '../context/FavoritesContext'
 import { useCart } from '../context/CartContext'
+import { useAuth } from '../context/AuthContext'
 import './ProductList.css'
+
 
 const API_BASE_URL = import.meta.env.VITE_API_URL_BACKEND || 'http://localhost:8000'
 
-/**
- * Модальное окно для отправки заявки
- */
+
 function ApplicationModal({ product, onClose }) {
   const [form, setForm] = useState({
     name: '',
@@ -104,8 +104,8 @@ function ApplicationModal({ product, onClose }) {
     }
 
     setLoading(true)
-    
-    const finalComment = product.selectedColor 
+
+    const finalComment = product.selectedColor
       ? `Выбранный цвет: ${product.selectedColor}\n${form.comment.trim()}`
       : form.comment.trim()
 
@@ -200,6 +200,7 @@ function ApplicationModal({ product, onClose }) {
   )
 }
 
+
 function ImagePlaceholder() {
   return (
     <div className="divan-card__no-img">
@@ -209,9 +210,7 @@ function ImagePlaceholder() {
   )
 }
 
-/**
- * Карточка отдельного товара
- */
+
 function ProductCard({ product }) {
   const [showModal, setShowModal] = useState(false)
   const [addedToCart, setAddedToCart] = useState(false)
@@ -219,9 +218,10 @@ function ProductCard({ product }) {
   const { t } = useLang()
   const { toggleFavorite, isFavorite } = useFavorites()
   const { addToCart } = useCart()
+  const { user, openModal } = useAuth()
 
   const colors = useMemo(() => product.colors || [], [product.colors])
-  
+
   const getInitialImg = useCallback(() => {
     if (colors.length > 0 && colors[0].img) return colors[0].img
     if (Array.isArray(product.imgs) && product.imgs.length > 0) return product.imgs[0]
@@ -260,6 +260,15 @@ function ProductCard({ product }) {
       setCurrentImg(color.img)
       setImgError(false)
     }
+  }
+
+  // ✅ Проверка авторизации перед открытием заявки
+  const handleOrderClick = () => {
+    if (!user) {
+      openModal()  // открывает модалку входа
+      return
+    }
+    setShowModal(true)
   }
 
   return (
@@ -362,22 +371,23 @@ function ProductCard({ product }) {
 
           <button
             className="btn-order-full"
-            onClick={() => setShowModal(true)}
+            onClick={handleOrderClick}
             type="button"
           >
-            📝 Оставить заявку
+            📝 {user ? 'Оставить заявку' : 'Войдите чтобы оставить заявку'}
           </button>
         </div>
       </div>
       {showModal && (
-        <ApplicationModal 
-          product={{ ...product, selectedColor: activeColor }} 
-          onClose={handleClose} 
+        <ApplicationModal
+          product={{ ...product, selectedColor: activeColor }}
+          onClose={handleClose}
         />
       )}
     </>
   )
 }
+
 
 export default function ProductList({ products, title, backPath, backLabel }) {
   const { t } = useLang()
