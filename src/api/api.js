@@ -3,15 +3,11 @@ const BASE_URL =
   import.meta.env.VITE_API_URL ||
   'http://localhost:8000'
 
-// ✅ Универсальная функция для картинок
-// Если img — полный https:// URL — возвращаем как есть
-// Если /uploads/... или /img/... — добавляем BASE_URL
-// Если просто имя файла — пробуем /img/<имя>
-// Если пусто — placeholder
+// Картинки хранятся в public/img/ на фронтенде
+// img в БД всегда вида "/img/pagesecond/..." — возвращаем как есть
 export function getImageUrl(img) {
   if (!img || img === 'null' || img === 'undefined') return '/img/placeholder.png'
   if (img.startsWith('http://') || img.startsWith('https://')) return img
-  if (img.startsWith('/uploads/')) return `${BASE_URL}${img}`
   if (img.startsWith('/')) return img
   if (img.startsWith('img/')) return `/${img}`
   return `/img/${img}`
