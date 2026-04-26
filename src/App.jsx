@@ -20,6 +20,8 @@ import ProfilePage from './pages/ProfilePage'
 import DigitalPage from './pages/digital/DigitalPage'
 import ProductDetail from './pages/ProductDetail'
 
+import VisualizePage from './pages/VisualizePage'
+
 // Цифровые продукты
 import RoqedPage from './pages/digital/RoqedPage'
 import StemPlatformPage from './pages/digital/StemPlatformPage'
@@ -85,6 +87,7 @@ export default function App() {
         <Route path="/digital" element={<DigitalPage />} />
         <Route path="/digital/stemplatform" element={<StemPlatformPage />} />
         <Route path="/digital/roqed" element={<RoqedPage />} />
+        <Route path="/visualize" element={<VisualizePage />} />
 
         {/* Страница товара */}
         <Route path="/product/:id" element={<ProductDetail />} />
