@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
 import './FavoritesPage.css'
 
-// ─── Карточка товара ────────────────────────────────────────
+
 const FavCard = memo(function FavCard({ item }) {
   const { toggleFavorite } = useFavorites()
   const { addToCart } = useCart()
@@ -16,9 +16,9 @@ const FavCard = memo(function FavCard({ item }) {
   const name = item.name || item.title || item.product_name || 'Без названия'
   const price = item.price ?? item.cost ?? null
   const article = item.article || item.sku || ''
-  
-  const imageSrc = imgError 
-    ? '/placeholder-product.svg' 
+
+  const imageSrc = imgError
+    ? '/placeholder-product.svg'
     : (item.imgs?.[0] || item.image || item.img || '/placeholder-product.svg')
 
   const telegramMsg = `Здравствуйте! Интересует товар: ${name}`
@@ -36,7 +36,6 @@ const FavCard = memo(function FavCard({ item }) {
     setTimeout(() => setAdded(false), 2000)
   }
 
-  // ✅ ИСПРАВЛЕНО - передаем весь объект item
   const handleRemove = () => {
     toggleFavorite(item)
   }
@@ -54,16 +53,16 @@ const FavCard = memo(function FavCard({ item }) {
       </button>
 
       <div className="fav-card__image-wrapper">
-        <img 
-          src={imageSrc} 
-          alt={name} 
-          className="fav-card__img" 
+        <img
+          src={imageSrc}
+          alt={name}
+          className="fav-card__img"
           loading="lazy"
           onError={() => setImgError(true)}
         />
         {imgError && (
-          <div style={{color:'#999', textAlign:'center', position:'absolute', inset:0, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center'}}>
-            <span style={{fontSize:'40px'}}>📦</span>
+          <div style={{ color: '#999', textAlign: 'center', position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+            <span style={{ fontSize: '40px' }}>📦</span>
             <p>Нет фото</p>
           </div>
         )}
@@ -72,7 +71,7 @@ const FavCard = memo(function FavCard({ item }) {
       <div className="fav-card__info">
         <h3 className="fav-card__name">{name}</h3>
         {article && <p className="fav-card__article">Арт. {article}</p>}
-        
+
         {price ? (
           <p className="fav-card__price">
             {Number(price).toLocaleString('ru-RU')} ₸
@@ -107,21 +106,26 @@ const FavCard = memo(function FavCard({ item }) {
   )
 })
 
+
 export default function FavoritesPage() {
   const { favorites, isLoading } = useFavorites()
-  const { user, setShowModal } = useAuth()
+  const { user, openModal } = useAuth()  // ✅ openModal вместо setShowModal
 
   if (isLoading) {
-    return <div className="fav-page"><p style={{textAlign:'center', paddingTop:'100px'}}>Загрузка...</p></div>
+    return (
+      <div className="fav-page">
+        <p style={{ textAlign: 'center', paddingTop: '100px' }}>Загрузка...</p>
+      </div>
+    )
   }
 
   if (!user) {
     return (
       <div className="fav-empty">
-        <span style={{fontSize: '50px', display:'block', marginBottom:'10px'}}>🔒</span>
+        <span style={{ fontSize: '50px', display: 'block', marginBottom: '10px' }}>🔒</span>
         <h2>Войдите в аккаунт</h2>
         <p>Чтобы сохранять товары, нужно авторизоваться</p>
-        <button onClick={() => setShowModal(true)} className="fav-login-btn">
+        <button onClick={() => openModal()} className="fav-login-btn">  {/* ✅ исправлено */}
           Войти / Зарегистрироваться
         </button>
       </div>
@@ -131,7 +135,7 @@ export default function FavoritesPage() {
   if (!favorites || favorites.length === 0) {
     return (
       <div className="fav-empty">
-        <span style={{fontSize: '50px', display:'block', marginBottom:'10px'}}>♡</span>
+        <span style={{ fontSize: '50px', display: 'block', marginBottom: '10px' }}>♡</span>
         <h2>Список пуст</h2>
         <p>Нажмите ❤ на товаре, чтобы добавить его сюда</p>
         <Link to="/catalog" className="fav-login-btn">Перейти в каталог</Link>
@@ -151,9 +155,9 @@ export default function FavoritesPage() {
 
       <div className="fav-grid">
         {favorites.map((item, index) => (
-          <FavCard 
-            key={item.id || item.article || `fav-${index}`} 
-            item={item} 
+          <FavCard
+            key={item.id || item.article || `fav-${index}`}
+            item={item}
           />
         ))}
       </div>
