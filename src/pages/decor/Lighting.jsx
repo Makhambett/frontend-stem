@@ -3,7 +3,9 @@ import { Link } from 'react-router-dom'
 import { createApplication } from '../../api/api'
 import { useCart } from '../../context/CartContext'
 import { useFavorites } from '../../context/FavoritesContext'
+import { useAuth } from '../../context/AuthContext'  // ✅ добавлено
 import './Lighting.css'
+
 
 const products = [
   { id: 1,  title: 'START',                           img: '/img/pagedecor/lighting/start.png',           size: '600х600',      article: 'S.Me-ST.S.DP' },
@@ -24,15 +26,22 @@ const products = [
   { id: 16, title: 'START',                           img: '/img/pagedecor/lighting/start3.png',          size: '700х200х170',  article: 'S.Me-ST.S.DP' },
 ]
 
+
 export default function Lighting() {
   const { addToCart } = useCart()
   const { toggleFavorite, isFavorite } = useFavorites()
+  const { user, openModal } = useAuth()  // ✅ добавлено
   const [showModal, setShowModal] = useState(false)
   const [formData, setFormData] = useState({ name: '', phone: '', comment: '', productName: '' })
   const [submitting, setSubmitting] = useState(false)
   const [submitSuccess, setSubmitSuccess] = useState(false)
 
+  // ✅ Проверка авторизации
   const handleOpenModal = (productName) => {
+    if (!user) {
+      openModal()
+      return
+    }
     setShowModal(true)
     setSubmitSuccess(false)
     setFormData({ name: '', phone: '', comment: '', productName })
@@ -58,7 +67,6 @@ export default function Lighting() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setSubmitting(true)
-    
     try {
       const applicationData = {
         name: formData.name,
@@ -68,7 +76,6 @@ export default function Lighting() {
         article: '',
         product_url: window.location.href
       }
-      
       await createApplication(applicationData)
       setSubmitSuccess(true)
       setTimeout(() => setShowModal(false), 2000)
@@ -113,7 +120,6 @@ export default function Lighting() {
 
                 <div className="product-characteristics">
                   <h3 className="characteristics-title">Характеристики:</h3>
-                  
                   <table className="characteristics-table">
                     <tbody>
                       <tr>
@@ -129,25 +135,15 @@ export default function Lighting() {
                 </div>
 
                 <div className="product-actions">
-                  <button 
-                    className="btn-cart"
-                    onClick={() => handleAddToCart(p)}
-                  >
+                  <button className="btn-cart" onClick={() => handleAddToCart(p)}>
                     🛒 В корзину
                   </button>
-                  
-                  <button 
-                    className="btn-favorite"
-                    onClick={() => toggleFavorite(p)}
-                  >
+                  <button className="btn-favorite" onClick={() => toggleFavorite(p)}>
                     {isFavorite(p.id) ? '❤️ В избранном' : '🤍 В избранное'}
                   </button>
                 </div>
 
-                <button 
-                  className="btn-application"
-                  onClick={() => handleOpenModal(p.title)}
-                >
+                <button className="btn-application" onClick={() => handleOpenModal(p.title)}>
                   📝 Оставить заявку
                 </button>
               </div>
@@ -186,7 +182,6 @@ export default function Lighting() {
                     placeholder="Иван Иванов"
                   />
                 </div>
-
                 <div className="form-group">
                   <label htmlFor="phone">Телефон *</label>
                   <input
@@ -199,7 +194,6 @@ export default function Lighting() {
                     placeholder="+7 (___) ___-__-__"
                   />
                 </div>
-
                 <div className="form-group">
                   <label htmlFor="comment">Комментарий</label>
                   <textarea
@@ -211,11 +205,9 @@ export default function Lighting() {
                     rows="3"
                   />
                 </div>
-
                 <button type="submit" className="btn-submit" disabled={submitting}>
                   {submitting ? '⏳ Отправка...' : '📤 Отправить заявку'}
                 </button>
-
                 <p className="form-note">
                   🔒 Ваши данные защищены. Мы не передаём их третьим лицам.
                 </p>
