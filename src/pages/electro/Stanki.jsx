@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { createApplication } from '../../api/api'
 import { useCart } from '../../context/CartContext'
-import { useFavorites } from '../../context/FavoritesContext'  // ✅ Импортируем контекст
+import { useFavorites } from '../../context/FavoritesContext'
+import { useAuth } from '../../context/AuthContext'  // ✅ добавлено
 import './Stanki.css'
 
 const products = [
@@ -41,13 +42,20 @@ const products = [
 
 export default function Stanki() {
   const { addToCart } = useCart()
-  const { toggleFavorite, isFavorite } = useFavorites()  // ✅ Используем контекст
+  const { toggleFavorite, isFavorite } = useFavorites()
+  const { user, openModal } = useAuth()  // ✅ добавлено
+
   const [showModal, setShowModal] = useState(false)
   const [formData, setFormData] = useState({ name: '', phone: '', comment: '', productName: '' })
   const [submitting, setSubmitting] = useState(false)
   const [submitSuccess, setSubmitSuccess] = useState(false)
 
+  // ✅ Проверка авторизации перед открытием заявки
   const handleOpenModal = (productName) => {
+    if (!user) {
+      openModal()
+      return
+    }
     setShowModal(true)
     setSubmitSuccess(false)
     setFormData({ name: '', phone: '', comment: '', productName })
@@ -73,7 +81,6 @@ export default function Stanki() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setSubmitting(true)
-    
     try {
       const applicationData = {
         name: formData.name,
@@ -83,7 +90,6 @@ export default function Stanki() {
         article: '',
         product_url: window.location.href
       }
-      
       await createApplication(applicationData)
       setSubmitSuccess(true)
       setTimeout(() => setShowModal(false), 2000)
@@ -103,74 +109,58 @@ export default function Stanki() {
 
   return (
     <>
-      <div className="third-page-container">
-        <nav className="third-page-breadcrumb">
-          <Link to="/">Главная</Link>
-          <span className="separator"> / </span>
-          <Link to="/electro">Электротехника</Link>
-          <span className="separator"> / </span>
-          <span className="current">Станки</span>
-        </nav>
+      <div className="stanki-page">
+        <div className="stanki-breadcrumb">
+          <Link to="/">Главная</Link> / <Link to="/electro">Электротехника</Link> / <span>Станки</span>
+        </div>
 
-        <h1>Станки <span className="product-count">{products.length} товара</span></h1>
+        <h1 className="stanki-title">Станки <span>{products.length} товара</span></h1>
 
         {products.map((p) => (
-          <div key={p.id} className="product-card">
-            <div className="product-image">
-              <img src={p.img} alt={p.title} />
+          <div key={p.id} className="stanki-card">
+            <div className="stanki-card__img-wrap">
+              <img src={p.img} alt={p.title} className="stanki-card__img" loading="lazy" />
             </div>
+            <div className="stanki-card__info">
+              <span className="stanki-card__tag">{p.tag}</span>
+              <h2 className="stanki-card__title">{p.title}</h2>
 
-            <div className="product-info">
-              <p className="product-tag">{p.tag}</p>
-              <h2 className="product-title">{p.title}</h2>
+              <p className="stanki-card__desc-label">Описание:</p>
+              {p.description.map((d, i) => (
+                <p key={i} className="stanki-card__desc">{d}</p>
+              ))}
 
-              <div className="product-description">
-                <p>Описание:</p>
-                {p.description.map((d, i) => (
-                  <p key={i}>{d}</p>
-                ))}
-              </div>
+              <table className="stanki-card__table">
+                <tbody>
+                  <tr>
+                    <td>Артикул</td>
+                    <td>{p.article}</td>
+                  </tr>
+                </tbody>
+              </table>
 
-              <div className="product-article">
-                <table>
-                  <tbody>
-                    <tr>
-                      <td>Артикул</td>
-                      <td>{p.article}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-
-              <div className="product-delivery">
+              <div className="stanki-card__delivery">
                 <p>🚚 Доставка по Казахстану</p>
                 <p>📍 Самовывоз: г. Астана, ул. Домалак-ана 26</p>
               </div>
 
-              <div className="product-actions">
-                <button 
-                  className="btn-cart"
-                  onClick={() => handleAddToCart(p)}
-                >
+              <div className="stanki-card__actions">
+                <button className="btn-cart" onClick={() => handleAddToCart(p)} type="button">
                   🛒 В корзину
                 </button>
-                
-                <button 
-                  className="btn-application"
-                  onClick={() => handleOpenModal(p.title)}
-                >
+                <button className="btn-order" onClick={() => handleOpenModal(p.title)} type="button">
                   📝 Оставить заявку
                 </button>
-                
-                <button 
-                  className={`btn-favorite ${isFavorite(p.id) ? 'btn-favorite--active' : ''}`}
+                <button
+                  className={`btn-favorite ${isFavorite(p.id) ? 'active' : ''}`}
                   onClick={() => toggleFavorite(p)}
+                  type="button"
                 >
                   {isFavorite(p.id) ? '❤️ В избранном' : '🤍 В избранное'}
                 </button>
               </div>
 
-              <div className="product-meta">
+              <div className="stanki-card__links">
                 <span>↗ Поделиться</span>
                 <span>⚖ Сравнить</span>
               </div>
@@ -181,23 +171,20 @@ export default function Stanki() {
 
       {showModal && (
         <div className="modal-overlay" onClick={handleCloseModal}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <button className="modal-close" onClick={handleCloseModal}>×</button>
-
-            <h2 className="modal-title">📝 Оставить заявку</h2>
-            <p className="modal-subtitle">
-              Товар: <strong>{formData.productName}</strong>
-            </p>
+          <div className="modal-box" onClick={(e) => e.stopPropagation()}>
+            <button className="modal-close" onClick={handleCloseModal} type="button">×</button>
+            <h3 className="modal-title">📝 Оставить заявку</h3>
+            <p className="modal-product-name">Товар: <strong>{formData.productName}</strong></p>
 
             {submitSuccess ? (
-              <div className="success-message">
-                <div className="success-icon">✅</div>
-                <h3>Заявка отправлена!</h3>
+              <div className="modal-success">
+                <span style={{ fontSize: '40px' }}>✅</span>
+                <h4>Заявка отправлена!</h4>
                 <p>Наш менеджер свяжется с вами в ближайшее время.</p>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="application-form">
-                <div className="form-group">
+              <form onSubmit={handleSubmit} className="modal-form">
+                <div className="modal-field">
                   <label htmlFor="name">Ваше имя *</label>
                   <input
                     type="text"
@@ -207,10 +194,10 @@ export default function Stanki() {
                     onChange={handleInputChange}
                     required
                     placeholder="Иван Иванов"
+                    className="modal-input"
                   />
                 </div>
-
-                <div className="form-group">
+                <div className="modal-field">
                   <label htmlFor="phone">Телефон *</label>
                   <input
                     type="tel"
@@ -220,10 +207,10 @@ export default function Stanki() {
                     onChange={handleInputChange}
                     required
                     placeholder="+7 (___) ___-__-__"
+                    className="modal-input"
                   />
                 </div>
-
-                <div className="form-group">
+                <div className="modal-field">
                   <label htmlFor="comment">Комментарий</label>
                   <textarea
                     id="comment"
@@ -232,16 +219,13 @@ export default function Stanki() {
                     onChange={handleInputChange}
                     placeholder="Дополнительная информация (необязательно)"
                     rows="3"
+                    className="modal-input modal-textarea"
                   />
                 </div>
-
                 <button type="submit" className="btn-submit" disabled={submitting}>
                   {submitting ? '⏳ Отправка...' : '📤 Отправить заявку'}
                 </button>
-
-                <p className="form-note">
-                  🔒 Ваши данные защищены. Мы не передаём их третьим лицам.
-                </p>
+                <p className="form-note">🔒 Ваши данные защищены. Мы не передаём их третьим лицам.</p>
               </form>
             )}
           </div>
