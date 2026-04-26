@@ -1,191 +1,152 @@
-import { useState, useEffect } from 'react'
+// src/pages/SearchPage.jsx
+import { useState, useEffect, useCallback } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
-import { useInView } from 'react-intersection-observer'
-import { getProducts, getImageUrl } from '../api/api'
-import { useLang } from '../i18n/LanguageContext'
-import './SearchPage.css'
+import axios from 'axios'
 
-
-const ProductCard = ({ product }) => {
-  const { ref, inView } = useInView({
-    triggerOnce: true,
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-  })
-
-  const productLink = product.path || product.url || `/product/${product.slug || product.id}`
-
-  return (
-    <Link
-      ref={ref}
-      to={productLink}
-      className={`search-card ${inView ? 'search-card--visible' : ''}`}
-      aria-label={`Перейти к товару: ${product.title}`}
-      role="listitem"
-    >
-      <div className="search-card__media">
-        <img
-          src={getImageUrl(product.img)}
-          loading="lazy"
-          decoding="async"
-          alt={`Купить ${product.title?.toLowerCase()} в STEM Academia`}
-          className="search-card__img"
-          onError={(e) => {
-            e.target.onerror = null
-            e.target.src = '/img/placeholder.png'
-          }}
-        />
-        {product.badge && (
-          <span className={`badge badge--${product.badge}`}>
-            {product.badge === 'new' ? 'NEW' : 'SALE'}
-          </span>
-        )}
-      </div>
-
-      <div className="search-card__info">
-        <h3 className="search-card__title">{product.title}</h3>
-        {product.article && (
-          <p className="search-card__article">Арт: {product.article}</p>
-        )}
-        {product.description && (
-          <p className="search-card__desc">{product.description}</p>
-        )}
-        {product.price && (
-          <div className="search-card__price">
-            {product.old_price && (
-              <span className="search-card__old-price">
-                {Number(product.old_price).toLocaleString('ru-RU')} ₸
-              </span>
-            )}
-            <span className="search-card__current-price">
-              {Number(product.price).toLocaleString('ru-RU')} ₸
-            </span>
-          </div>
-        )}
-      </div>
-    </Link>
-  )
-}
-
+const API = import.meta.env.VITE_API_URL || 'https://backend-stem-lpv8.onrender.com'
 
 export default function SearchPage() {
-  const [searchParams] = useSearchParams()
-  const query = searchParams.get('q') || ''
-  const [results, setResults] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const { t } = useLang()
+  const [searchParams, setSearchParams] = useSearchParams()
 
+  const [query, setQuery]       = useState(searchParams.get('q') || '')
+  const [category, setCategory] = useState(searchParams.get('category') || '')
+  const [inStock, setInStock]   = useState(searchParams.get('in_stock') || '')
+
+  const [products, setProducts]     = useState([])
+  const [categories, setCategories] = useState([])
+  const [loading, setLoading]       = useState(false)
+  const [error, setError]           = useState(null)
+
+  // Загружаем категории один раз
   useEffect(() => {
-    if (!query) {
-      setLoading(false)
-      setResults([])
-      return
-    }
+    axios.get(`${API}/api/categories/`)
+      .then(res => setCategories(res.data))
+      .catch(() => {})
+  }, [])
 
+  // Поиск при изменении фильтров
+  const fetchProducts = useCallback(async () => {
     setLoading(true)
     setError(null)
+    try {
+      const params = {}
+      if (query.trim())  params.q        = query.trim()
+      if (category)      params.category  = category
+      if (inStock !== '') params.in_stock = inStock === 'true'
 
-    getProducts({ q: query })
-      .then(data => {
-        setResults(Array.isArray(data) ? data : [])
-        setLoading(false)
-      })
-      .catch(err => {
-        console.error('Ошибка поиска:', err)
-        setError('Не удалось загрузить результаты. Попробуйте позже.')
-        setLoading(false)
-      })
-  }, [query])
+      const res = await axios.get(`${API}/api/products/`, { params })
+      setProducts(res.data)
+    } catch (e) {
+      setError('Ошибка загрузки. Попробуйте снова.')
+    } finally {
+      setLoading(false)
+    }
+  }, [query, category, inStock])
 
-  // JSON-LD schema
+  // Синхронизация URL с фильтрами
   useEffect(() => {
-    if (!query || results.length === 0) return
+    const params = {}
+    if (query.trim())   params.q        = query.trim()
+    if (category)       params.category  = category
+    if (inStock !== '') params.in_stock  = inStock
+    setSearchParams(params, { replace: true })
 
-    const schema = {
-      "@context": "https://schema.org",
-      "@type": "SearchResultsPage",
-      "name": `Результаты поиска: ${query}`,
-      "description": `Найдено ${results.length} товаров по запросу "${query}" в STEM Academia.`,
-      "mainEntity": results.map(p => ({
-        "@type": "Product",
-        "name": p.title,
-        "image": getImageUrl(p.img),
-        "sku": p.article,
-        "url": `${window.location.origin}${p.path || `/product/${p.id}`}`
-      }))
-    }
+    fetchProducts()
+  }, [query, category, inStock])
 
-    const script = document.createElement('script')
-    script.type = 'application/ld+json'
-    script.innerHTML = JSON.stringify(schema)
-    document.head.appendChild(script)
-
-    return () => {
-      if (document.head.contains(script)) document.head.removeChild(script)
-    }
-  }, [query, results])
+  const handleReset = () => {
+    setQuery('')
+    setCategory('')
+    setInStock('')
+  }
 
   return (
     <div className="search-page">
-      <nav className="search-breadcrumb" aria-label="Breadcrumb">
-        <Link to="/" className="breadcrumb-link">{t?.home || 'Главная'}</Link>
-        <span className="separator" aria-hidden="true"> / </span>
-        <span className="current">Поиск: "{query}"</span>
-      </nav>
 
-      <h1 className="search-title">
-        Результаты поиска: <span>"{query}"</span>
-      </h1>
+      {/* ── ШАПКА ПОИСКА ── */}
+      <div className="search-header">
+        <h1>Поиск товаров</h1>
 
-      {loading && (
-        <div className="search-loading" aria-live="polite">
-          <div className="search-skeleton">
-            {[...Array(6)].map((_, i) => (
-              <div key={i} className="skeleton-card">
-                <div className="skeleton skeleton-image" />
-                <div className="skeleton skeleton-text" />
-                <div className="skeleton skeleton-text skeleton-text--short" />
-              </div>
+        <input
+          type="text"
+          placeholder="Название или артикул..."
+          value={query}
+          onChange={e => setQuery(e.target.value)}
+          className="search-input"
+        />
+
+        {/* ── ФИЛЬТРЫ ── */}
+        <div className="search-filters">
+          <select
+            value={category}
+            onChange={e => setCategory(e.target.value)}
+          >
+            <option value="">Все категории</option>
+            {categories.map(cat => (
+              <option key={cat.slug} value={cat.slug}>
+                {cat.title_ru}
+              </option>
             ))}
-          </div>
-        </div>
-      )}
+          </select>
 
-      {!loading && error && (
-        <div className="search-error" role="alert">
-          <p>⚠️ {error}</p>
-          <Link to="/" className="btn-back">← Вернуться на главную</Link>
-        </div>
-      )}
+          <select
+            value={inStock}
+            onChange={e => setInStock(e.target.value)}
+          >
+            <option value="">Любое наличие</option>
+            <option value="true">В наличии</option>
+            <option value="false">Нет в наличии</option>
+          </select>
 
-      {!loading && !error && !query && (
-        <div className="search-empty">
-          <p>Введите запрос в строку поиска</p>
-          <Link to="/" className="btn-back">← На главную</Link>
+          <button onClick={handleReset} className="btn-reset">
+            Сбросить
+          </button>
         </div>
-      )}
+      </div>
 
-      {!loading && !error && query && results.length === 0 && (
-        <div className="search-empty">
-          <p>😔 Ничего не найдено по запросу "{query}"</p>
-          <Link to="/" className="btn-back">← Вернуться на главную</Link>
-        </div>
-      )}
+      {/* ── РЕЗУЛЬТАТЫ ── */}
+      <div className="search-results">
+        {loading && <p className="search-status">Загрузка...</p>}
+        {error   && <p className="search-status error">{error}</p>}
 
-      {!loading && !error && results.length > 0 && (
-        <>
-          <p className="search-count">
-            🔍 Найдено: <strong>{results.length}</strong>{' '}
-            {results.length === 1 ? 'товар' : results.length < 5 ? 'товара' : 'товаров'}
-          </p>
-          <div className="search-grid" role="list">
-            {results.map(product => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-        </>
-      )}
+        {!loading && !error && products.length === 0 && (
+          <p className="search-status">Ничего не найдено</p>
+        )}
+
+        {!loading && !error && products.length > 0 && (
+          <>
+            <p className="search-count">Найдено: {products.length}</p>
+            <div className="products-grid">
+              {products.map(product => (
+                <Link
+                  key={product.id}
+                  to={`/product/${product.id}`}
+                  className="product-card"
+                >
+                  <img
+                    src={product.img || '/placeholder.jpg'}
+                    alt={product.title}
+                    onError={e => { e.target.src = '/placeholder.jpg' }}
+                  />
+                  <div className="product-card__body">
+                    <h3>{product.title}</h3>
+                    {product.article && (
+                      <p className="product-card__article">Арт: {product.article}</p>
+                    )}
+                    {product.size && (
+                      <p className="product-card__size">Размер: {product.size}</p>
+                    )}
+                    <span className={`badge ${product.in_stock ? 'badge--green' : 'badge--gray'}`}>
+                      {product.in_stock ? 'В наличии' : 'Нет в наличии'}
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+
     </div>
   )
 }
