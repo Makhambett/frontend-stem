@@ -123,7 +123,7 @@ export default function SearchPage() {
       ) : (
         <>
           <p className="search-count">
-            Найдено: <strong>{results.length}</strong> {results.length === 1 ? 'товар' : 'товаров'}
+            Найдено : <strong>{results.length}</strong> {results.length === 1 ? 'товар' : 'товаров'}
           </p>
 
           <div className="search-grid" role="list">
